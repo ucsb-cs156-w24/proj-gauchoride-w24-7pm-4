@@ -27,6 +27,6 @@ public class DriverAvailability {
   private String day;
   
   private String startTime;
-  private String endTimeString;
+  private String endTime;
   private String notes;
 }
