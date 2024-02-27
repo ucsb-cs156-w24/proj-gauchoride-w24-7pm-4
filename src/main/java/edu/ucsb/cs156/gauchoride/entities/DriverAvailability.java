@@ -26,7 +26,7 @@ public class DriverAvailability {
   @Schema(allowableValues = "Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday")
   private String day;
   
-  private String startTime;
-  private String endTime;
+  private String startTime; // format: HH:MM(A/P)M e.g. "11:00AM" or "01:37PM"
+  private String endTime; // format: HH:MM(A/P)M e.g. "11:00AM" or "01:37PM"
   private String notes;
 }
