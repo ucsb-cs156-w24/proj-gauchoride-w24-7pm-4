@@ -168,6 +168,46 @@ public class RoleInterceptorTests extends ControllerTestCase {
         }
 
         @Test
+        public void updates_rider_role_when_user_rider_false() throws Exception {
+                User user = User.builder()
+                                .email("cgaucho@ucsb.edu")
+                                .id(15L)
+                                .admin(true)
+                                .rider(false)
+                                .build();
+                when(userRepository.findByEmail("cgaucho@ucsb.edu")).thenReturn(Optional.of(user));
+
+                MockHttpServletRequest request = new MockHttpServletRequest("GET", "/api/currentUser");
+                HandlerExecutionChain chain = mapping.getHandler(request);
+                MockHttpServletResponse response = new MockHttpServletResponse();
+
+                assert chain != null;
+                Optional<HandlerInterceptor> RoleInterceptor = chain.getInterceptorList()
+                                .stream()
+                                .filter(RoleInterceptor.class::isInstance)
+                                .findFirst();
+
+                assertTrue(RoleInterceptor.isPresent());
+
+                RoleInterceptor.get().preHandle(request, response, chain.getHandler());
+
+                verify(userRepository, times(1)).findByEmail("cgaucho@ucsb.edu");
+
+                Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext()
+                                .getAuthentication().getAuthorities();
+
+                boolean role_admin = authorities.stream()
+                                .anyMatch(grantedAuth -> grantedAuth.getAuthority().equals("ROLE_ADMIN"));
+                boolean role_rider = authorities.stream()
+                                .anyMatch(grantedAuth -> grantedAuth.getAuthority().equals("ROLE_RIDER"));
+                boolean role_member = authorities.stream()
+                                .anyMatch(grantedAuth -> grantedAuth.getAuthority().equals("ROLE_MEMBER"));
+                assertTrue(role_admin, "ROLE_ADMIN should not be in roles list");
+                assertFalse(role_rider, "ROLE_RIDER should be in roles list");
+                assertTrue(role_member, "ROLE_MEMBER should be in roles list");
+        }
+
+        @Test
         public void updates_nothing_when_user_not_present() throws Exception {
                 User user = User.builder()
                                 .email("cgaucho2@ucsb.edu")
