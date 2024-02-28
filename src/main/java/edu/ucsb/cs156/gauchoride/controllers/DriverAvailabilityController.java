@@ -76,6 +76,6 @@ public class DriverAvailabilityController extends ApiController {
             .orElseThrow(() -> new EntityNotFoundException(DriverAvailability.class, id));
     
          driverAvailabilityRepository.delete(drivav);
-        return genericMessage("Driver Availabilty with id %s deleted".formatted(id));
+        return genericMessage("Driver Availability with id %s deleted".formatted(id));
         }
 }
