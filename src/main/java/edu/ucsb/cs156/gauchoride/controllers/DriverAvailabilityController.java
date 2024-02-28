@@ -65,4 +65,25 @@ public class DriverAvailabilityController extends ApiController {
 
         return savedDriverAvailability;
     }
+
+    @Operation(summary = "Get a list of all driver availabilities")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("/admin/all")
+    public ResponseEntity<String> allDriverAvailabilities()
+            throws JsonProcessingException {
+        Iterable<DriverAvailability> driverAvailabilities = driverAvailabilityRepository.findAll();
+        String body = mapper.writeValueAsString(driverAvailabilities);
+        return ResponseEntity.ok().body(body);
+    }
+
+    @Operation(summary = "Get driver availability by id")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("/admin")
+    public DriverAvailability driverAvailabilityByID(
+            @Parameter(name = "id", description = "Long, id number of driver availability to get", example = "1", required = true) @RequestParam Long id)
+            throws JsonProcessingException {
+        DriverAvailability driverAvailability = driverAvailabilityRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(DriverAvailability.class, id));
+        return driverAvailability;
+    }
 }
