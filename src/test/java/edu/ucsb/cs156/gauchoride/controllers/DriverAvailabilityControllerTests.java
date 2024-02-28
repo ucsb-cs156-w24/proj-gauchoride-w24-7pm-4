@@ -96,7 +96,7 @@ public class DriverAvailabilityControllerTests extends ControllerTestCase {
             String responseString = response.getResponse().getContentAsString();
             assertEquals(expectedJson, responseString);
         }
-        @WithMockUser(roles = { "ADMIN", "USER" })
+        @WithMockUser(roles = { "DRIVER" })
         @Test
         public void admin_can_delete_a_driveravailibilty() throws Exception {
             // arrange
@@ -125,7 +125,7 @@ public class DriverAvailabilityControllerTests extends ControllerTestCase {
             assertEquals("Driver Availability with id 1 deleted", json.get("message"));
         }
 
-        @WithMockUser(roles = { "ADMIN", "USER" })
+    @WithMockUser(roles = { "DRIVER" })
     @Test
     public void admin_tries_to_delete_non_existant_driveravailibilty_and_gets_right_error_message()
             throws Exception {
