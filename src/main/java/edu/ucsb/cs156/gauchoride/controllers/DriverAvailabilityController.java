@@ -100,4 +100,25 @@ public class DriverAvailabilityController extends ApiController {
 
         return drivav;
     }
+
+
+    @Operation(summary= "List all Driver Availability")
+    @PreAuthorize("hasRole('ROLE_DRIVER')")
+    @GetMapping("/all")
+    public Iterable<DriverAvailability> allmenuitems() {
+        Iterable<DriverAvailability> drivall = driverAvailabilityRepository.findAll();
+        return drivall;
+    }
+
+
+    @Operation(summary= "Get Driver Availability")
+    @PreAuthorize("hasRole('ROLE_DRIVER')")
+    @GetMapping("")
+    public DriverAvailability getById(
+            @Parameter(name="id") @RequestParam Long id) {
+        DriverAvailability drivav = driverAvailabilityRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException( DriverAvailability.class, id));
+
+        return drivav;
+    }
 }

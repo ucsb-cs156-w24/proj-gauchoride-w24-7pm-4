@@ -231,5 +231,104 @@ public void admin_can_edit_an_existing_driveravailibility() throws Exception {
 
     }
 
-        
+    @Test
+    public void logged_out_users_cannot_get_all() throws Exception {
+        mockMvc.perform(get("/api/driverAvailability/all"))
+                .andExpect(status().is(403)); // logged out users can't get all
+    }
+
+    @WithMockUser(roles = { "USER","DRIVER" })
+    @Test
+    public void logged_in_users_can_get_all() throws Exception {
+        mockMvc.perform(get("/api/driverAvailability/all"))
+                .andExpect(status().is(200)); // logged
+    }
+
+    @WithMockUser(roles = { "USER","DRIVER" })
+    @Test
+    public void logged_in_user_can_get_all_driveravailibilty() throws Exception {
+        DriverAvailability item1 = DriverAvailability.builder()
+            .driverId(1L) // Original driver ID
+            .day("Friday")
+            .startTime("10:00AM")
+            .endTime("11:00AM")
+            .notes("old car")
+            .build();
+        DriverAvailability item2 = DriverAvailability.builder()
+            .driverId(2L) 
+            .startTime("11:00AM")
+            .endTime("12:00AM")
+            .notes("new car")
+            .build();
+
+        ArrayList<DriverAvailability> expectedItems = new ArrayList<>();
+        expectedItems.addAll(Arrays.asList(item1, item2));
+
+        when(driverAvailabilityRepository.findAll()).thenReturn(expectedItems);
+
+        // act
+        MvcResult response = mockMvc.perform(get("/api/driverAvailability/all"))
+                .andExpect(status().isOk()).andReturn();
+
+        // assert
+
+        verify(driverAvailabilityRepository, times(1)).findAll();
+        String expectedJson = mapper.writeValueAsString(expectedItems);
+        String responseString = response.getResponse().getContentAsString();
+        assertEquals(expectedJson, responseString);
+    }
+
+    @Test
+    public void logged_out_users_cannot_get_by_id() throws Exception {
+        mockMvc.perform(get("/api/driverAvailability?id=7"))
+                .andExpect(status().is(403)); // logged out users can't get by id
+    }
+
+    @WithMockUser(roles = { "DRIVER" })
+    @Test
+    public void test_that_logged_in_user_can_get_by_id_when_the_id_exists() throws Exception {
+
+        // arrange
+
+        DriverAvailability item1 = DriverAvailability.builder()
+            .driverId(7L) 
+            .startTime("11:00AM")
+            .endTime("12:00AM")
+            .notes("new car")
+            .build();
+
+        when(driverAvailabilityRepository.findById(eq(7L))).thenReturn(Optional.of(item1));
+
+        // act
+        MvcResult response = mockMvc.perform(get("/api/driverAvailability?id=7"))
+                .andExpect(status().isOk()).andReturn();
+
+        // assert
+
+        verify(driverAvailabilityRepository, times(1)).findById(eq(7L));
+        String expectedJson = mapper.writeValueAsString(item1);
+        String responseString = response.getResponse().getContentAsString();
+        assertEquals(expectedJson, responseString);
+    }
+
+    @WithMockUser(roles = { "DRIVER" })
+    @Test
+    public void test_that_logged_in_user_can_get_by_id_when_the_id_does_not_exist() throws Exception {
+
+        // arrange
+
+        when(driverAvailabilityRepository.findById(eq(7L))).thenReturn(Optional.empty());
+
+        // act
+        MvcResult response = mockMvc.perform(get("/api/driverAvailability?id=7"))
+                .andExpect(status().isNotFound()).andReturn();
+
+        // assert
+
+        verify(driverAvailabilityRepository, times(1)).findById(eq(7L));
+        Map<String, Object> json = responseToJson(response);
+        assertEquals("EntityNotFoundException", json.get("type"));
+        assertEquals("DriverAvailability with id 7 not found", json.get("message"));
+    }
+
 }
