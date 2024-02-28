@@ -30,6 +30,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
+
 import org.springframework.http.MediaType;
 
 @WebMvcTest(controllers = DriverAvailabilityController.class)
@@ -143,6 +145,90 @@ public class DriverAvailabilityControllerTests extends ControllerTestCase {
         verify(driverAvailabilityRepository, times(1)).findById(1L);
         Map<String, Object> json = responseToJson(response);
         assertEquals("DriverAvailability with id 1 not found", json.get("message"));
+    }
+
+    @WithMockUser(roles = { "DRIVER" })
+    @Test
+public void admin_can_edit_an_existing_driveravailibility() throws Exception {
+    // Arrange
+    DriverAvailability availOrig = DriverAvailability.builder()
+        .driverId(67L) // Original driver ID
+        .day("Friday")
+        .startTime("10:00AM")
+        .endTime("11:00AM")
+        .notes("old car")
+        .build();
+
+    Long newDriverId = 68L; // New driver ID for testing update
+    DriverAvailability availedited = DriverAvailability.builder()
+        .driverId(newDriverId) // Update to a different driver ID
+        .day("Saturday")
+        .startTime("09:00AM")
+        .endTime("12:00PM")
+        .notes("new car")
+        .build();
+
+    String requestBody = mapper.writeValueAsString(availedited);
+
+    when(driverAvailabilityRepository.findById(eq(67L))).thenReturn(Optional.of(availOrig));
+    when(driverAvailabilityRepository.save(any(DriverAvailability.class))).thenReturn(availedited);
+
+    // act
+    MvcResult response = mockMvc.perform(
+            put("/api/driverAvailability?id=67")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .characterEncoding("utf-8")
+                    .content(requestBody)
+                    .with(csrf()))
+            .andExpect(status().isOk()).andReturn();
+
+    // assert
+    verify(driverAvailabilityRepository, times(1)).findById(67L);
+    verify(driverAvailabilityRepository, times(1)).save(argThat(availability ->
+        availability.getDriverId().equals(newDriverId) &&
+        availability.getDay().equals("Saturday") &&
+        availability.getStartTime().equals("09:00AM") &&
+        availability.getEndTime().equals("12:00PM") &&
+        availability.getNotes().equals("new car")
+    ));
+
+    // Deserialize response to DriverAvailability and assert on updated driverId
+    DriverAvailability responseAvail = mapper.readValue(response.getResponse().getContentAsString(), DriverAvailability.class);
+    assertEquals(newDriverId, responseAvail.getDriverId());
+}
+
+
+
+    @WithMockUser(roles = { "DRIVER" })
+    @Test
+    public void admin_cannot_edit_ucsbdiningcommonsmenuitem_that_does_not_exist() throws Exception {
+        // arrange
+
+        DriverAvailability availedited = DriverAvailability.builder()
+             .driverId(67L)
+            .day("Friday")
+            .startTime("10:00AM")
+            .endTime("11:00AM")
+            .notes("old car")
+            .build();
+        String requestBody = mapper.writeValueAsString(availedited);
+
+        when(driverAvailabilityRepository.findById(eq(67L))).thenReturn(Optional.empty());
+
+        // act
+        MvcResult response = mockMvc.perform(
+                put("/api/driverAvailability?id=67")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("utf-8")
+                        .content(requestBody)
+                        .with(csrf()))
+                .andExpect(status().isNotFound()).andReturn();
+
+        // assert
+        verify(driverAvailabilityRepository, times(1)).findById(67L);
+        Map<String, Object> json = responseToJson(response);
+        assertEquals("DriverAvailability with id 67 not found", json.get("message"));
+
     }
 
         
