@@ -13,7 +13,7 @@ export default function UsersTable({ users}) {
             }
         }
     }
-
+ 
     // Stryker disable all : hard to test for query caching
     const toggleRiderMutation = useBackendMutation(
         cellToAxiosParamsToggleRider,
