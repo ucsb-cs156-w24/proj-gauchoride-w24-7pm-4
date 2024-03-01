@@ -4,7 +4,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.AccessLevel;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
@@ -13,7 +12,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor()
 @Builder
 @Entity(name = "driveravailability")
 public class DriverAvailability {
