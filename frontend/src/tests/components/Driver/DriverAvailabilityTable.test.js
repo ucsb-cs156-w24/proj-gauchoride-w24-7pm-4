@@ -10,7 +10,7 @@ describe("DriverAvailabilityTable tests", () => {
     test("renders without crashing for empty table", () => {
         render(
             <QueryClientProvider client={queryClient}>
-                <DriverTable drivers={[]} />
+                <DriverAvailabilityTable drivers={[]} />
             </QueryClientProvider>
         );
     });
@@ -18,7 +18,7 @@ describe("DriverAvailabilityTable tests", () => {
     test("renders without crashing for three shifts", () => {
         render(
             <QueryClientProvider client={queryClient}>
-                <DriverTable drivers={driverAvailabilityFixtures.threeDrivers} />
+                <DriverAvailabilityTable drivers={driverAvailabilityFixtures.threeDrivers} />
             </QueryClientProvider>
         );
     });
@@ -26,7 +26,7 @@ describe("DriverAvailabilityTable tests", () => {
     test("Has the expected column headers and content", () => {
         const { getByText, getByTestId } = render(
             <QueryClientProvider client={queryClient}>
-                <DriverTable drivers={driverAvailabilityFixtures.threeDrivers}/>
+                <DriverAvailabilityTable drivers={driverAvailabilityFixtures.threeDrivers}/>
             </QueryClientProvider>
         );
     
@@ -45,16 +45,16 @@ describe("DriverAvailabilityTable tests", () => {
         });
 
         expect(getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("1");
-        expect(getByTestId(`${testId}-cell-row-0-col-`)).toHaveTextContent("");
-        expect(getByTestId(`${testId}-cell-row-0-col-`)).toHaveTextContent("");
-        expect(getByTestId(`${testId}-cell-row-0-col-`)).toHaveTextContent("");
-        expect(getByTestId(`${testId}-cell-row-0-col-`)).toHaveTextContent("");
-        expect(getByTestId(`${testId}-cell-row-0-col-`)).toHaveTextContent("");
+        expect(getByTestId(`${testId}-cell-row-0-col-driverId`)).toHaveTextContent("14");
+        expect(getByTestId(`${testId}-cell-row-0-col-day`)).toHaveTextContent("Friday");
+        expect(getByTestId(`${testId}-cell-row-0-col-startTime`)).toHaveTextContent("09:00AM");
+        expect(getByTestId(`${testId}-cell-row-0-col-endTime`)).toHaveTextContent("10:00AM");
+        expect(getByTestId(`${testId}-cell-row-0-col-notes`)).toHaveTextContent("just got my license");
         expect(getByTestId(`${testId}-cell-row-1-col-id`)).toHaveTextContent("2");
-        expect(getByTestId(`${testId}-cell-row-1-col-`)).toHaveTextContent("");
-        expect(getByTestId(`${testId}-cell-row-1-col-`)).toHaveTextContent("");
-        expect(getByTestId(`${testId}-cell-row-1-col-`)).toHaveTextContent("");
-        expect(getByTestId(`${testId}-cell-row-0-col-`)).toHaveTextContent("");
-        expect(getByTestId(`${testId}-cell-row-0-col-`)).toHaveTextContent("");
+        expect(getByTestId(`${testId}-cell-row-1-col-driverId`)).toHaveTextContent("3");
+        expect(getByTestId(`${testId}-cell-row-1-col-startTime`)).toHaveTextContent("1:00PM");
+        expect(getByTestId(`${testId}-cell-row-1-col-endTime`)).toHaveTextContent("3:00PM");
+        expect(getByTestId(`${testId}-cell-row-0-col-day`)).toHaveTextContent("Monday");
+        expect(getByTestId(`${testId}-cell-row-0-col-notes`)).toHaveTextContent("tired in morning");
         });
 });

@@ -21,7 +21,7 @@ export default function DriverAvailabilityTable ({ drivershifts }) {
         },
         {
             Header: 'Driver',
-            accessor: 'driverID',
+            accessor: 'driverId',
         },
         {
             Header: 'Notes',
