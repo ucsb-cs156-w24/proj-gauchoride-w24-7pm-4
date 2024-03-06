@@ -41,6 +41,7 @@ describe("DriverAvailabilityForm tests", () => {
 
         const submitButton = screen.getByTestId("DriverAvailabilityForm-submit");
         fireEvent.click(submitButton);
+
         await waitFor(() => {
             expect(screen.getByText("Driver ID is required.")).toBeInTheDocument();
             expect(screen.getByText("Day is required.")).toBeInTheDocument();
@@ -56,7 +57,6 @@ describe("DriverAvailabilityForm tests", () => {
             </Router>
         );
 
-        // Simulate user input for form fields
         fireEvent.change(screen.getByTestId("DriverAvailabilityForm-driverId"), { target: { value: '1' } });
         fireEvent.change(screen.getByTestId("DriverAvailabilityForm-day"), { target: { value: 'Monday' } });
         fireEvent.change(screen.getByTestId("DriverAvailabilityForm-startTime"), { target: { value: '09:00' } });
@@ -81,5 +81,42 @@ describe("DriverAvailabilityForm tests", () => {
 
         fireEvent.click(screen.getByTestId("DriverAvailabilityForm-cancel"));
         await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith(-1));
+    });
+
+    test("button label goes automaticallyto 'Create' when not specified ", async () => {
+        render(
+            <Router>
+                <DriverAvailabilityForm submitAction={mockSubmitAction} />
+            </Router>
+        );
+        expect(screen.getByTestId("DriverAvailabilityForm-submit")).toHaveTextContent("Create");
+    });
+
+    test("initializes form with initialContents", async () => {
+        const initialContents = {
+            driverId: '1',
+            day: 'Monday',
+            startTime: '09:00',
+            endTime: '17:00',
+            notes: 'Available all day',
+        };
+        render(
+            <Router>
+                <DriverAvailabilityForm initialContents={initialContents} submitAction={mockSubmitAction} />
+            </Router>
+        );
+        expect(screen.getByTestId("DriverAvailabilityForm-driverId")).toHaveValue(Number(initialContents.driverId));
+        expect(screen.getByTestId("DriverAvailabilityForm-day")).toHaveValue(initialContents.day);
+        // Add checks for other fields as well
+    });
+
+    test("initializes form without initialContents correctly", async () => {
+        render(
+            <Router>
+                <DriverAvailabilityForm submitAction={mockSubmitAction} />
+            </Router>
+        );
+        expect(screen.getByTestId("DriverAvailabilityForm-driverId")).toHaveValue(null);
+        // Add checks for other fields to be empty or have default values as appropriate
     });
 });
