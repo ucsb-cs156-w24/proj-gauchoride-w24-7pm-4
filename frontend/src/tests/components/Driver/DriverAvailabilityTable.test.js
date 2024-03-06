@@ -30,7 +30,7 @@ describe("DriverAvailabilityTable tests", () => {
             </QueryClientProvider>
         );
     
-        const expectedHeaders = ["id", "Day", "Start Time", "End Time", "Driver", "Notes"];
+        const expectedHeaders = ["id", "Day", "Start Time", "End Time", "Driver ID", "Notes"];
         const expectedFields = ["id", "day", "startTime", "endTime", "driverId", "notes"];
         const testId = "DriverAvailabilityTable";
 

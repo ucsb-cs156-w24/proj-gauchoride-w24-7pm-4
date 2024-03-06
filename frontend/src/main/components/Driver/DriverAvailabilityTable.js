@@ -20,7 +20,7 @@ export default function DriverAvailabilityTable ({ driverAvailabilities }) {
             accessor: 'endTime',
         },
         {
-            Header: 'Driver',
+            Header: 'Driver ID',
             accessor: 'driverId',
         },
         {
