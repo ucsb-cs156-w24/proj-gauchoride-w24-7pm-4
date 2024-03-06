@@ -64,7 +64,20 @@ public class DriverAvailabilityController extends ApiController {
         DriverAvailability savedDriverAvailability = driverAvailabilityRepository.save(driverAvailability);
 
         return savedDriverAvailability;
-    }
+        }
+
+    @Operation(summary= "Delete Driver Availability")
+    @PreAuthorize("hasRole('ROLE_DRIVER')")
+    @DeleteMapping("")
+    public Object deletemenuitem(
+        @Parameter(name="id") @RequestParam Long id) 
+        {
+        DriverAvailability drivav = driverAvailabilityRepository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException(DriverAvailability.class, id));
+        
+         driverAvailabilityRepository.delete(drivav);
+        return genericMessage("Driver Availability with id %s deleted".formatted(id));
+        }
 
     @Operation(summary = "Get a list of all driver availabilities")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
