@@ -31,7 +31,7 @@ describe("DriverAvailabilityTable tests", () => {
         );
     
         const expectedHeaders = ["id", "Day", "Start Time", "End Time", "Driver", "Notes"];
-        const expectedFields = ["id", "day", "startTime", "endTime", "driverID", "notes"];
+        const expectedFields = ["id", "day", "startTime", "endTime", "driverId", "notes"];
         const testId = "DriverAvailabilityTable";
 
         expectedHeaders.forEach( (headerText)=> {

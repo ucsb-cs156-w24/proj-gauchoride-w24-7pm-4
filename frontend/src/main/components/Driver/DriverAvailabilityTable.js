@@ -1,6 +1,6 @@
 import OurTable from "main/components/OurTable"
 
-export default function DriverAvailabilityTable ({ drivershifts }) {
+export default function DriverAvailabilityTable ({ driverAvailabilities }) {
 
     const columns = [
         {
@@ -30,7 +30,7 @@ export default function DriverAvailabilityTable ({ drivershifts }) {
     ];
 
     return <OurTable
-        data={drivershifts}
+        data={driverAvailabilities}
         columns={columns}
         testid={"DriverAvailabilityTable"}
     />;
