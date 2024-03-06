@@ -10,7 +10,7 @@ describe("DriverAvailabilityTable tests", () => {
     test("renders without crashing for empty table", () => {
         render(
             <QueryClientProvider client={queryClient}>
-                <DriverAvailabilityTable drivers={[]} />
+                <DriverAvailabilityTable driverAvailabilities={[]} />
             </QueryClientProvider>
         );
     });
@@ -18,7 +18,7 @@ describe("DriverAvailabilityTable tests", () => {
     test("renders without crashing for three shifts", () => {
         render(
             <QueryClientProvider client={queryClient}>
-                <DriverAvailabilityTable drivers={driverAvailabilityFixtures.threeDrivers} />
+                <DriverAvailabilityTable driverAvailabilities={driverAvailabilityFixtures.threeDriverAvailabilities} />
             </QueryClientProvider>
         );
     });
@@ -26,7 +26,7 @@ describe("DriverAvailabilityTable tests", () => {
     test("Has the expected column headers and content", () => {
         const { getByText, getByTestId } = render(
             <QueryClientProvider client={queryClient}>
-                <DriverAvailabilityTable drivers={driverAvailabilityFixtures.threeDrivers}/>
+                <DriverAvailabilityTable driverAvailabilities={driverAvailabilityFixtures.threeDriverAvailabilities}/>
             </QueryClientProvider>
         );
     
@@ -54,7 +54,7 @@ describe("DriverAvailabilityTable tests", () => {
         expect(getByTestId(`${testId}-cell-row-1-col-driverId`)).toHaveTextContent("3");
         expect(getByTestId(`${testId}-cell-row-1-col-startTime`)).toHaveTextContent("1:00PM");
         expect(getByTestId(`${testId}-cell-row-1-col-endTime`)).toHaveTextContent("3:00PM");
-        expect(getByTestId(`${testId}-cell-row-0-col-day`)).toHaveTextContent("Monday");
-        expect(getByTestId(`${testId}-cell-row-0-col-notes`)).toHaveTextContent("tired in morning");
+        expect(getByTestId(`${testId}-cell-row-1-col-day`)).toHaveTextContent("Monday");
+        expect(getByTestId(`${testId}-cell-row-1-col-notes`)).toHaveTextContent("tired in morning");
         });
 });
