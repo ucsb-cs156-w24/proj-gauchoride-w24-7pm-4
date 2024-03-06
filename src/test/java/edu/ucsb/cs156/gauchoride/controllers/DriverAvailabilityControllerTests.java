@@ -96,4 +96,54 @@ public class DriverAvailabilityControllerTests extends ControllerTestCase {
             String responseString = response.getResponse().getContentAsString();
             assertEquals(expectedJson, responseString);
         }
+        @WithMockUser(roles = { "DRIVER" })
+        @Test
+        public void admin_can_delete_a_driveravailibilty() throws Exception {
+            // arrange
+    
+            DriverAvailability availability1 = DriverAvailability.builder()
+                                .driverId(1L)
+                                .day("Friday")
+                                .startTime("10:00AM")
+                                .endTime("11:00AM")
+                                .notes("old car")
+                                .build();
+    
+            when(driverAvailabilityRepository.findById(eq(1L))).thenReturn(Optional.of(availability1));
+    
+            // act
+            MvcResult response = mockMvc.perform(
+                    delete("/api/driverAvailability?id=1")
+                            .with(csrf()))
+                    .andExpect(status().isOk()).andReturn();
+    
+            // assert
+            verify(driverAvailabilityRepository, times(1)).findById(1L);
+            verify(driverAvailabilityRepository, times(1)).delete(any());
+    
+            Map<String, Object> json = responseToJson(response);
+            assertEquals("Driver Availability with id 1 deleted", json.get("message"));
+        }
+
+    @WithMockUser(roles = { "DRIVER" })
+    @Test
+    public void admin_tries_to_delete_non_existant_driveravailibilty_and_gets_right_error_message()
+            throws Exception {
+        // arrange
+
+        when(driverAvailabilityRepository.findById(eq(1L))).thenReturn(Optional.empty());
+
+        // act
+        MvcResult response = mockMvc.perform(
+                delete("/api/driverAvailability?id=1")
+                        .with(csrf()))
+                .andExpect(status().isNotFound()).andReturn();
+
+        // assert
+        verify(driverAvailabilityRepository, times(1)).findById(1L);
+        Map<String, Object> json = responseToJson(response);
+        assertEquals("DriverAvailability with id 1 not found", json.get("message"));
+    }
+
+        
 }
