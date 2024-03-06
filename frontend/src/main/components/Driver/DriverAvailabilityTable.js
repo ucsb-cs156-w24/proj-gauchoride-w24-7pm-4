@@ -1,7 +1,27 @@
-import OurTable from "main/components/OurTable"
+import OurTable from "main/components/OurTable"  // if admin, needs {ButtonColumn}
+// import { useBackendMutation } from "main/utils/useBackend";
+// import { cellToAxiosParamsDelete, onDeleteSuccess } from "main/utils/availabilityUtils"
+// import { useNavigate } from "react-router-dom";
+// import { hasRole } from "main/utils/currentUser";
 
-export default function DriverAvailabilityTable ({ driverAvailabilities }) {
+export default function DriverAvailabilityTable ({ driverAvailabilities }) { // if admin, needs currentUser
+    // const navigate = useNavigate();
 
+    // const editCallback = (cell) => {
+    //     navigate(`/driverAvailability/edit/${cell.row.values.id}`)
+    // }
+
+    // // Stryker disable all : hard to test for query caching
+
+    // const deleteMutation = useBackendMutation(
+    //     cellToAxiosParamsDelete,
+    //     { onSuccess: onDeleteSuccess },
+    //     ["/api/driverAvailability/all"]
+    // );
+    // // Stryker restore all 
+
+    // // Stryker disable next-line all : TODO try to make a good test for this
+    // const deleteCallback = async (cell) => { deleteMutation.mutate(cell); }
     const columns = [
         {
             Header: 'id',
@@ -28,7 +48,10 @@ export default function DriverAvailabilityTable ({ driverAvailabilities }) {
             accessor: 'notes',
         }
     ];
-
+    // if (hasRole(currentUser, "ROLE_ADMIN")) {
+    //     columns.push(ButtonColumn("Edit", "primary", editCallback, "DriverAvailabilityTable"));
+    //     columns.push(ButtonColumn("Delete", "danger", deleteCallback, "DriverAvailabilityTable"));
+    // } 
     return <OurTable
         data={driverAvailabilities}
         columns={columns}
