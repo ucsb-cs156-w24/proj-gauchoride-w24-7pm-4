@@ -21,10 +21,6 @@ Create.args = {
 export const Update = Template.bind({});
 Update.args = {
     initialContents: 
-            // driverId: "123", 
-            // driverEmail: "driver@example.com",
-            // startDate: "2024-01-01",
-            // endDate: "2024-01-15",
         driverAvailabilityFixtures.oneDriverAvailability
     ,
     buttonLabel: "Update",

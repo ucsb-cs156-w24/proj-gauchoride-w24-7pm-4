@@ -1,3 +1,4 @@
+import React from 'react';
 import { Button, Form, Row, Col } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
@@ -14,84 +15,90 @@ function DriverAvailabilityForm({ initialContents, submitAction, buttonLabel = "
     return (
         <Form onSubmit={handleSubmit(submitAction)}>
             <Row>
-                {initialContents && (
-                    <Col>
-                        <Form.Group className="mb-3">
-                            <Form.Label htmlFor="driverId">Driver ID</Form.Label>
-                            <Form.Control
-                                data-testid="DriverAvailabilityForm-driverId"
-                                id="driverId"
-                                type="text"
-                                {...register("driverId")}
-                                value={initialContents.driverId}
-                                disabled
-                            />
-                        </Form.Group>
-                    </Col>
-                )}
-
-                <Col>
+                <Col xs={12}>
                     <Form.Group className="mb-3">
-                        <Form.Label htmlFor="driverEmail">Driver Email</Form.Label>
+                        <Form.Label htmlFor="driverId">Driver ID</Form.Label>
                         <Form.Control
-                            data-testid="DriverAvailabilityForm-driverEmail"
-                            id="driverEmail"
-                            type="email"
-                            isInvalid={Boolean(errors.driverEmail)}
-                            {...register("driverEmail", { required: true })}
+                            data-testid="DriverAvailabilityForm-driverId"
+                            id="driverId"
+                            type="number"
+                            {...register("driverId", { required: true })}
+                            isInvalid={Boolean(errors.driverId)}
                         />
                         <Form.Control.Feedback type="invalid">
-                            {errors.driverEmail && 'Driver Email is required.'}
+                            {errors.driverId && 'Driver ID is required.'}
                         </Form.Control.Feedback>
                     </Form.Group>
                 </Col>
 
-                <Col>
+                <Col xs={12}>
                     <Form.Group className="mb-3">
-                        <Form.Label htmlFor="dateAvailable">Start Date</Form.Label>
+                        <Form.Label htmlFor="day">Day</Form.Label>
                         <Form.Control
-                            data-testid="DriverAvailabilityForm-startDate"
-                            id="startDate"
-                            type="date"
-                            isInvalid={Boolean(errors.startDate)}
-                            {...register("startDate", { required: true })}
+                            data-testid="DriverAvailabilityForm-day"
+                            id="day"
+                            type="text"
+                            {...register("day", { required: true })}
+                            isInvalid={Boolean(errors.day)}
                         />
                         <Form.Control.Feedback type="invalid">
-                            {errors.startDate && 'Start Date is required.'}
+                            {errors.day && 'Day is required.'}
                         </Form.Control.Feedback>
                     </Form.Group>
                 </Col>
 
-                <Col>
+                <Col xs={6}>
                     <Form.Group className="mb-3">
-                        <Form.Label htmlFor="endDate">End Date</Form.Label>
+                        <Form.Label htmlFor="startTime">Start Time</Form.Label>
                         <Form.Control
-                            data-testid="DriverAvailabilityForm-endDate"
-                            id="endDate"
-                            type="date"
-                            isInvalid={Boolean(errors.endDate)}
-                            {...register("endDate", { required: true })}
+                            data-testid="DriverAvailabilityForm-startTime"
+                            id="startTime"
+                            type="text"
+                            {...register("startTime", { required: true })}
+                            isInvalid={Boolean(errors.startTime)}
                         />
                         <Form.Control.Feedback type="invalid">
-                            {errors.endDate && 'End Date is required.'}
+                            {errors.startTime && 'Start Time is required.'}
                         </Form.Control.Feedback>
+                    </Form.Group>
+                </Col>
+
+                <Col xs={6}>
+                    <Form.Group className="mb-3">
+                        <Form.Label htmlFor="endTime">End Time</Form.Label>
+                        <Form.Control
+                            data-testid="DriverAvailabilityForm-endTime"
+                            id="endTime"
+                            type="text"
+                            {...register("endTime", { required: true })}
+                            isInvalid={Boolean(errors.endTime)}
+                        />
+                        <Form.Control.Feedback type="invalid">
+                            {errors.endTime && 'End Time is required.'}
+                        </Form.Control.Feedback>
+                    </Form.Group>
+                </Col>
+
+                <Col xs={12}>
+                    <Form.Group className="mb-3">
+                        <Form.Label htmlFor="notes">Notes</Form.Label>
+                        <Form.Control
+                            data-testid="DriverAvailabilityForm-notes"
+                            id="notes"
+                            as="textarea"
+                            rows={3}
+                            {...register("notes")}
+                        />
                     </Form.Group>
                 </Col>
             </Row>
 
             <Row>
                 <Col>
-                    <Button
-                        type="submit"
-                        data-testid="DriverAvailabilityForm-submit"
-                    >
+                    <Button type="submit" data-testid="DriverAvailabilityForm-submit">
                         {buttonLabel}
                     </Button>
-                    <Button
-                        variant="Secondary"
-                        onClick={() => navigate(-1)}
-                        data-testid="DriverAvailabilityForm-cancel"
-                    >
+                    <Button variant="Secondary" onClick={() => navigate(-1)} data-testid="DriverAvailabilityForm-cancel">
                         Cancel
                     </Button>
                 </Col>
