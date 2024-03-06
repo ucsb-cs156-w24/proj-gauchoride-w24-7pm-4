@@ -64,6 +64,19 @@ import io.swagger.v3.oas.annotations.Parameter;
 <span class="fc" id="L64">        DriverAvailability savedDriverAvailability = driverAvailabilityRepository.save(driverAvailability);</span>
 
 <span class="fc" id="L66">        return savedDriverAvailability;</span>
-    }
+        }
+
+    @Operation(summary= &quot;Delete Driver Availability&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_DRIVER')&quot;)
+    @DeleteMapping(&quot;&quot;)
+    public Object deletemenuitem(
+        @Parameter(name=&quot;id&quot;) @RequestParam Long id) 
+        {
+<span class="fc" id="L75">        DriverAvailability drivav = driverAvailabilityRepository.findById(id)</span>
+<span class="fc" id="L76">            .orElseThrow(() -&gt; new EntityNotFoundException(DriverAvailability.class, id));</span>
+        
+<span class="fc" id="L78">         driverAvailabilityRepository.delete(drivav);</span>
+<span class="fc" id="L79">        return genericMessage(&quot;Driver Availability with id %s deleted&quot;.formatted(id));</span>
+        }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
