@@ -30,6 +30,19 @@ admin.args = {
     }
 };
 
+export const rider = Template.bind({});
+admin.args = {
+    currentUser: {
+        data: {
+            root: {
+                rolesList: [
+                    "ROLE_RIDER"
+                ]
+            }
+        }
+    }
+};
+
 export const localhost3000 = Template.bind({});
 localhost3000.args = {
     currentUrl: "http://localhost:3000"
