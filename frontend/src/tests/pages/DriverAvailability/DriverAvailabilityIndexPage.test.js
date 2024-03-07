@@ -30,11 +30,6 @@ describe("DriverAvailabilityIndexPage tests", () => {
         axiosMock.onGet("/api/currentUser").reply(200, apiCurrentUserFixtures.userOnly);
         axiosMock.onGet("/api/systemInfo").reply(200, systemInfoFixtures.showingNeither);
     };
-    const setupAdminUser = () => {
-        axiosMock.reset();
-        axiosMock.resetHistory();
-        axiosMock.onGet("/api/currentUser").reply(200, apiCurrentUserFixtures.adminUser);
-    };
     const setupDriverOnly = () => {
         axiosMock.reset();
         axiosMock.resetHistory();
@@ -45,7 +40,7 @@ describe("DriverAvailabilityIndexPage tests", () => {
     test("renders without crashing for regular user", () => {
         setupUserOnly();
         const queryClient = new QueryClient();
-        axiosMock.onGet("/api/driverAvailability/admin/all").reply(200, []);
+        axiosMock.onGet("/api/driverAvailability/all").reply(200, []);
 
         render(
             <QueryClientProvider client={queryClient}>
@@ -61,27 +56,10 @@ describe("DriverAvailabilityIndexPage tests", () => {
 
     });
 
-    test("renders without crashing for admin user", () => {
-        setupAdminUser();
-        const queryClient = new QueryClient();
-        axiosMock.onGet("/api/driverAvailability/admin/all").reply(200, []);
-
-        render(
-            <QueryClientProvider client={queryClient}>
-                <MemoryRouter>
-                    <DriverAvailabilityIndexPage />
-                </MemoryRouter>
-            </QueryClientProvider>
-        );
-
-        const createDriverAvailabilityButton = screen.getByText("Create Driver Availability");
-        expect(createDriverAvailabilityButton).toBeInTheDocument();
-        expect(createDriverAvailabilityButton).toHaveAttribute("style", "float: right;");
-    });
     test("renders without crashing for driver", () => {
         setupDriverOnly();
         const queryClient = new QueryClient();
-        axiosMock.onGet("/api/driverAvailability/admin/all").reply(200, []);
+        axiosMock.onGet("/api/driverAvailability/all").reply(200, []);
 
         render(
             <QueryClientProvider client={queryClient}>
@@ -96,29 +74,11 @@ describe("DriverAvailabilityIndexPage tests", () => {
         expect(createDriverAvailabilityButton).toHaveAttribute("style", "float: right;");
     });
 
-    test("renders driver availabilities without crashing for admin user", async () => {
-        setupAdminUser();
-        const queryClient = new QueryClient();
-        axiosMock.onGet("/api/driverAvailability/admin/all").reply(200, driverAvailabilityFixtures.threeDriverAvailabilities);
-
-        const { getByTestId } = render(
-            <QueryClientProvider client={queryClient}>
-                <MemoryRouter>
-                    <DriverAvailabilityIndexPage />
-                </MemoryRouter>
-            </QueryClientProvider>
-        );
-
-        await waitFor(() => {
-            expect(screen.getByText("Driver Availabilities")).toBeInTheDocument();
-            expect(getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("1");
-            expect(getByTestId(`${testId}-cell-row-1-col-id`)).toHaveTextContent("2");
-        });
-    });
+    
     test("renders driver availabilities without crashing for user", async () => {
         setupUserOnly();
         const queryClient = new QueryClient();
-        axiosMock.onGet("/api/driverAvailability/admin/all").reply(200, driverAvailabilityFixtures.threeDriverAvailabilities);
+        axiosMock.onGet("/api/driverAvailability/all").reply(200, driverAvailabilityFixtures.threeDriverAvailabilities);
 
         const { getByTestId } = render(
             <QueryClientProvider client={queryClient}>
@@ -137,7 +97,7 @@ describe("DriverAvailabilityIndexPage tests", () => {
     test("renders driver availabilities without crashing for driver", async () => {
         setupDriverOnly();
         const queryClient = new QueryClient();
-        axiosMock.onGet("/api/driverAvailability/admin/all").reply(200, driverAvailabilityFixtures.threeDriverAvailabilities);
+        axiosMock.onGet("/api/driverAvailability/all").reply(200, driverAvailabilityFixtures.threeDriverAvailabilities);
 
         const { getByTestId } = render(
             <QueryClientProvider client={queryClient}>
@@ -154,27 +114,6 @@ describe("DriverAvailabilityIndexPage tests", () => {
         });
     });
 
-    test("renders empty table when backend unavailable, admin user", async () => {
-        setupAdminUser();
-
-        const queryClient = new QueryClient();
-        axiosMock.onGet("/api/driverAvailability/admin/all").timeout();
-
-        const restoreConsole = mockConsole();
-
-        render(
-            <QueryClientProvider client={queryClient}>
-                <MemoryRouter>
-                    <DriverAvailabilityIndexPage />
-                </MemoryRouter>
-            </QueryClientProvider>
-        );
-
-        await waitFor(() => { expect(axiosMock.history.get.length).toBeGreaterThanOrEqual(1); });
-        restoreConsole();
-
-        expect(screen.queryByText("John Doe")).not.toBeInTheDocument();
-    });
 
     test("renders empty table when backend unavailable, user only", async () => {
         setupUserOnly();

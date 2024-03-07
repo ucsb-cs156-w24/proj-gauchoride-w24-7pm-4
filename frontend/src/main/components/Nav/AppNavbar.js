@@ -88,11 +88,12 @@ export default function AppNavbar({ currentUser, systemInfo, doLogout, currentUr
                 )
               }
               {
-                isParticipant(currentUser) && (
-                  <NavDropdown title="Shifts" id="appnavbar-shift-dropdown" data-testid="appnavbar-shift-dropdown" >
-                    <NavDropdown.Item data-testid="appnavbar-shift-dropdown-shifts" as={Link} to="/shift/">Shifts</NavDropdown.Item>
-                  </NavDropdown>
-                )
+                <NavDropdown title="Shifts" id="appnavbar-shift-dropdown" data-testid="appnavbar-shift-dropdown" >
+                  <NavDropdown.Item data-testid="appnavbar-shift-dropdown-shifts" as={Link} to="/shift/">Shifts</NavDropdown.Item>
+                  {hasRole(currentUser, "ROLE_DRIVER") && (
+                    <NavDropdown.Item data-testid="appnavbar-shift-dropdown-shifts" as={Link} to="/driveravailability/">Availability</NavDropdown.Item>
+                  )}
+                </NavDropdown>
               }
               {
                 isParticipant(currentUser) && (
@@ -106,13 +107,6 @@ export default function AppNavbar({ currentUser, systemInfo, doLogout, currentUr
                 hasChat(currentUser) && (
                   <NavDropdown title="Chat" id="appnavbar-chat-dropdown" data-testid="appnavbar-chat-dropdown" >
                     <NavDropdown.Item as={Link} to="/chat">Chat</NavDropdown.Item>
-                  </NavDropdown>
-                )
-              }
-              {
-                isParticipant(currentUser) && (
-                  <NavDropdown title="Driver Availability" id="appnavbar-driver-availability-dropdown" data-testid="appnavbar-driver-availability-dropdown" >
-                    <NavDropdown.Item as={Link} to="/driveravailability/">Driver Availability</NavDropdown.Item>
                   </NavDropdown>
                 )
               }
