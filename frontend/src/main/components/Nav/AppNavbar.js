@@ -111,6 +111,13 @@ export default function AppNavbar({ currentUser, systemInfo, doLogout, currentUr
               }
               {
                 isParticipant(currentUser) && (
+                  <NavDropdown title="Driver Availability" id="appnavbar-driver-availability-dropdown" data-testid="appnavbar-driver-availability-dropdown" >
+                    <NavDropdown.Item as={Link} to="/driveravailability/">Driver Availability</NavDropdown.Item>
+                  </NavDropdown>
+                )
+              }
+              {
+                isParticipant(currentUser) && (
                   <Nav.Link id ="appnavbar-driver-link" data-testid="appnavbar-driver" as={Link} to="/drivers/list">Drivers Page</Nav.Link>
                 )
               }

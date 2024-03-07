@@ -34,7 +34,7 @@ export default function DriverAvailabilityCreatePage({ storybook = false }) {
   }
 
   if (isSuccess && !storybook) {
-    return <Navigate to="/DriverAvailability" />
+    return <Navigate to="/driveravailability" />
   }
 
   return (

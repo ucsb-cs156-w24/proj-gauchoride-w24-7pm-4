@@ -26,6 +26,8 @@ import RiderApplicationIndexPageMember from "main/pages/RiderApplication/RiderAp
 import { hasRole, useCurrentUser } from "main/utils/currentUser";
 
 import "bootstrap/dist/css/bootstrap.css";
+import DriverAvailabilityIndexPage from "main/pages/DriverAvailability/DriverAvailabilityIndexPage";
+import DriverAvailabilityCreatePage from "main/pages/DriverAvailability/DriverAvailabilityCreatePage";
 
 
 function App() {
@@ -50,6 +52,12 @@ function App() {
         }
         {
           (hasRole(currentUser, "ROLE_ADMIN") || hasRole(currentUser, "ROLE_DRIVER") || hasRole(currentUser, "ROLE_RIDER")) && <Route exact path="/ride/" element={<RideRequestIndexPage />} />
+        }
+        {
+          (hasRole(currentUser, "ROLE_ADMIN") || hasRole(currentUser, "ROLE_DRIVER") || hasRole(currentUser, "ROLE_RIDER")) && <Route exact path="/driveravailability/" element={<DriverAvailabilityIndexPage />} />
+        }
+        {
+          (hasRole(currentUser, "ROLE_ADMIN") || hasRole(currentUser, "ROLE_DRIVER") || hasRole(currentUser, "ROLE_RIDER")) && <Route exact path="/driveravailability/create" element={<DriverAvailabilityCreatePage />} />
         }
         {
           (hasRole(currentUser, "ROLE_RIDER") || hasRole(currentUser, "ROLE_ADMIN")) && <Route exact path="/ride/create" element={<RideRequestCreatePage />} />

@@ -17,7 +17,7 @@ export default function RideRequestIndexPage() {
     ["/api/ride_request/all"],
     { method: "GET", url: "/api/ride_request/all" },
     []
-    // Stryker restore all 
+  // Stryker restore all 
   );
 
   return (
