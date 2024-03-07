@@ -97,6 +97,6 @@ describe("DriverAvailabilityCreatePage tests", () => {
         });
 
         expect(mockToast).toBeCalledWith("New Driver Availability Created - id: 1 for driverId: 1");
-        expect(mockNavigate).toBeCalledWith({ "to": "/DriverAvailability" });
+        expect(mockNavigate).toBeCalledWith({ "to": "/driveravailability" });
     });
 });

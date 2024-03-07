@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 
 export default function DriverAvailabilityCreatePage({ storybook = false }) {
   const objectToAxiosParams = (driverAvailability) => ({
-    url: "/api/DriverAvailability/new",
+    url: "/api/driverAvailability/new",
     method: "POST",
     params: {
       driverId: driverAvailability.driverId,
