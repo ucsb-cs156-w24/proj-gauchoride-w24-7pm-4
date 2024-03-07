@@ -214,6 +214,48 @@ describe("AppNavbar tests", () => {
         const shiftMenu = screen.queryByTestId("appnavbar-shift-dropdown");
         expect(shiftMenu).not.toBeInTheDocument();        
     });
+    test("not render shift driver dropdown for not driver", async () => {
+
+        const currentUser = currentUserFixtures.userOnly;
+        const doLogin = jest.fn();
+
+        const { getByText } = render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter>
+                    <AppNavbar currentUser={currentUser} doLogin={doLogin} />
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
+        
+        await waitFor(() => expect(getByText("Welcome, Phillip Conrad")).toBeInTheDocument());
+        const driverDropdown = screen.queryByTestId("appnavbar-shift-dropdown-availability");
+        expect(driverDropdown).not.toBeInTheDocument();        
+    });
+
+    test("render shift driver dropdown for driver", async () => {
+        const currentUser = currentUserFixtures.driverOnly;
+        const doLogin = jest.fn();
+
+        const { getByText, getByTestId, findByTestId, queryByTestId } = render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter>
+                    <AppNavbar currentUser={currentUser} doLogin={doLogin} />
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
+        
+        await waitFor(() => expect(getByText("Welcome, Phillip Conrad")).toBeInTheDocument());
+        const shiftMenu = getByTestId("appnavbar-shift-dropdown");
+        expect(shiftMenu).toBeInTheDocument(); 
+
+        await findByTestId("appnavbar-shift-dropdown");
+        const dropdown = getByTestId("appnavbar-shift-dropdown");
+        const aElement = dropdown.querySelector("a");
+        expect(aElement).toBeInTheDocument();
+        aElement?.click();
+        await findByTestId(/appnavbar-shift-dropdown-availability/);
+       
+    });
 
     // test taken from https://github.com/ucsb-cs156/proj-courses repo
     test("renders image correctly", async () => {
