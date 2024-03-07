@@ -11,11 +11,13 @@ export default function DriverAvailabilityIndexPage() {
 
   const currentUser = useCurrentUser();
 
+  const isAdmin = currentUser && currentUser.roles.includes("ROLE_ADMIN");
+
   const { data: driverAvailabilities, error: _error, status: _status } =
     useBackend(
       // Stryker disable all : hard to test for query caching
-      ["/api/driverAvailability/all"],
-      { method: "GET", url: "/api/driverAvailability/all" },
+      isAdmin ? ["/api/driverAvailability/admin/all"] : ["/api/driverAvailability/all"],
+      { method: "GET", url: isAdmin ? "/api/driverAvailability/admin/all" : "/api/driverAvailability/all" },
       []
     );
 
