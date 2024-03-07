@@ -674,8 +674,29 @@ describe("AppNavbar tests", () => {
         
         await waitFor(() => expect(getByText("Welcome, Phillip Conrad")).toBeInTheDocument());
         const applyMenu = screen.queryByText("Apply to be a Rider");
-        expect(applyMenu).not.toBeInTheDocument();      
+        expect(applyMenu).toBeInTheDocument();      
     });
+
+    test("Rider page link should appear for a user that is a rider", async() => {
+        const currentUser = currentUserFixtures.riderOnly;
+        const doLogin = jest.fn();
+
+        const { getByText } = render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter>
+                    <AppNavbar currentUser={currentUser} doLogin={doLogin} />
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
+        
+        await waitFor(() => expect(getByText("Welcome, Phillip Conrad")).toBeInTheDocument());
+        const driverLink = screen.queryByTestId("appnavbar-driver-link");
+        expect(driverLink).not.toBeInTheDocument();      
+        
+        await waitFor(() => expect(getByText("Welcome, Phillip Conrad")).toBeInTheDocument());
+        const applyMenu = screen.queryByText("Apply to be a Rider");
+        expect(applyMenu).not.toBeInTheDocument();      
+    }); 
 
 });
 
