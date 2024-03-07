@@ -58,7 +58,7 @@ describe("DriverAvailabilityCreatePage tests", () => {
             notes: 'free all day'
         };
 
-        axiosMock.onPost("/api/DriverAvailability/new").reply(202, driverAvailability);
+        axiosMock.onPost("/api/driverAvailability/new").reply(202, driverAvailability);
 
         render(
             <QueryClientProvider client={queryClient}>
