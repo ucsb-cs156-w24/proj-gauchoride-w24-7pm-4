@@ -30,6 +30,13 @@ describe("DriverAvailabilityIndexPage tests", () => {
         axiosMock.onGet("/api/currentUser").reply(200, apiCurrentUserFixtures.userOnly);
         axiosMock.onGet("/api/systemInfo").reply(200, systemInfoFixtures.showingNeither);
     };
+    const setupAdminUser = () => {
+        axiosMock.reset();
+        axiosMock.resetHistory();
+        axiosMock.onGet("/api/currentUser").reply(200, apiCurrentUserFixtures.adminUser);
+        axiosMock.onGet("/api/systemInfo").reply(200, systemInfoFixtures.showingNeither);
+        axiosMock.onGet("/api/driverAvailability/admin/all").reply(200, driverAvailabilityFixtures.threeDriverAvailabilities);
+    };
     const setupDriverOnly = () => {
         axiosMock.reset();
         axiosMock.resetHistory();
@@ -74,6 +81,23 @@ describe("DriverAvailabilityIndexPage tests", () => {
         expect(createDriverAvailabilityButton).toHaveAttribute("style", "float: right;");
     });
 
+    test("renders without crashing for admin user", () => {
+        setupAdminUser();
+        const queryClient = new QueryClient();
+        axiosMock.onGet("/api/driverAvailability/admin/all").reply(200, []);
+
+        render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter>
+                    <DriverAvailabilityIndexPage />
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
+        const createRideButton = screen.getByText("Create Driver Availability");
+        expect(createRideButton).toBeInTheDocument();
+        expect(createRideButton).toHaveAttribute("style", "float: right;");
+    });
+
     
     test("renders driver availabilities without crashing for user", async () => {
         setupUserOnly();
@@ -114,6 +138,26 @@ describe("DriverAvailabilityIndexPage tests", () => {
         });
     });
 
+    test("renders three rides without crashing for admin user", async () => {
+        setupAdminUser();
+        const queryClient = new QueryClient();
+        axiosMock.onGet("/api/driverAvailability/admin/all").reply(200, driverAvailabilityFixtures.threeDriverAvailabilities);
+
+        const { getByTestId } = render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter>
+                    <DriverAvailabilityIndexPage />
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
+
+        await waitFor(() => {
+            expect(screen.getByText("Driver Availabilities")).toBeInTheDocument();
+            expect(getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("1");
+            expect(getByTestId(`${testId}-cell-row-1-col-id`)).toHaveTextContent("2");
+        });
+
+    });
 
     test("renders empty table when backend unavailable, user only", async () => {
         setupUserOnly();
@@ -143,3 +187,4 @@ describe("DriverAvailabilityIndexPage tests", () => {
     });
 
 });
+
