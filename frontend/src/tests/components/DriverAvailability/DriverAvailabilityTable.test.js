@@ -63,7 +63,6 @@ describe("DriverAvailabilityTable tests", () => {
             </QueryClientProvider>
         );
     });
-
     test("Has the expected column headers and content for adminUser", () => {
         const currentUser = currentUserFixtures.adminUser;
 
