@@ -99,4 +99,47 @@ public class DriverAvailabilityController extends ApiController {
                 .orElseThrow(() -> new EntityNotFoundException(DriverAvailability.class, id));
         return driverAvailability;
     }
+    
+
+    @Operation(summary= "Update Driver Availability")
+    @PreAuthorize("hasRole('ROLE_DRIVER')")
+    @PutMapping("")
+    public DriverAvailability updatemenuitem(
+            @Parameter(name="id") @RequestParam Long id,
+            @RequestBody @Valid DriverAvailability incoming) {
+
+        DriverAvailability drivav = driverAvailabilityRepository.findById(id)
+        .orElseThrow(() -> new EntityNotFoundException(DriverAvailability.class, id));
+
+        drivav.setDriverId(incoming.getDriverId());
+        drivav.setDay(incoming.getDay());
+        drivav.setStartTime(incoming.getStartTime());
+        drivav.setEndTime(incoming.getEndTime());
+        drivav.setNotes(incoming.getNotes());
+
+        driverAvailabilityRepository.save(drivav);
+
+        return drivav;
+    }
+
+
+    @Operation(summary= "List all Driver Availability")
+    @PreAuthorize("hasRole('ROLE_DRIVER')")
+    @GetMapping("/all")
+    public Iterable<DriverAvailability> allmenuitems() {
+        Iterable<DriverAvailability> drivall = driverAvailabilityRepository.findAll();
+        return drivall;
+    }
+
+
+    @Operation(summary= "Get Driver Availability")
+    @PreAuthorize("hasRole('ROLE_DRIVER')")
+    @GetMapping("")
+    public DriverAvailability getById(
+            @Parameter(name="id") @RequestParam Long id) {
+        DriverAvailability drivav = driverAvailabilityRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException( DriverAvailability.class, id));
+
+        return drivav;
+    }
 }
