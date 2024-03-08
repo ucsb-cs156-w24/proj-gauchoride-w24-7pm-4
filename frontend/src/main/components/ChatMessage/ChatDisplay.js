@@ -43,7 +43,7 @@ const ChatDisplay = () => {
   return (
     <div>
       <Stack>
-        {[...page.content].reverse().map((message) => (
+        {[...page.content].reverse().map((message) => ( // removed a .reverse() in the middle
           <ChatMessageDisplay key={message.chatMessage.id} chatMessage={message} />
         ))}
       </Stack>
