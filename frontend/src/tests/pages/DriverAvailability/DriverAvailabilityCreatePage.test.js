@@ -52,9 +52,9 @@ describe("DriverAvailabilityCreatePage tests", () => {
         const driverAvailability = {
             id: 1,
             driverId: '1',
-            day: 'Friday',
-            startTime: '09:00',
-            endTime: '17:00',
+            day: 'Monday',
+            startTime: '09:00AM',
+            endTime: '05:00PM',
             notes: 'free all day'
         };
 
@@ -80,9 +80,9 @@ describe("DriverAvailabilityCreatePage tests", () => {
         const submitButton = screen.getByTestId("DriverAvailabilityForm-submit");
 
         fireEvent.change(driverIdField, { target: { value: '1' } });
-        fireEvent.change(dayField, { target: { value: 'Friday' } });
-        fireEvent.change(startTimeField, { target: { value: '09:00' } });
-        fireEvent.change(endTimeField, { target: { value: '17:00' } });
+        fireEvent.change(dayField, { target: { value: 'Monday' } });
+        fireEvent.change(startTimeField, { target: { value: '09:00AM' } });
+        fireEvent.change(endTimeField, { target: { value: '05:00PM' } });
         fireEvent.change(notesField, { target: { value: 'free all day' } });
 
         expect(submitButton).toBeInTheDocument();
@@ -90,9 +90,9 @@ describe("DriverAvailabilityCreatePage tests", () => {
         await waitFor(() => expect(axiosMock.history.post.length).toBe(1));
         expect(axiosMock.history.post[0].params).toEqual({
             driverId: '1',
-            day: 'Friday',
-            startTime: '09:00',
-            endTime: '17:00',
+            day: 'Monday',
+            startTime: '09:00AM',
+            endTime: '05:00PM',
             notes: 'free all day'
         });
 
