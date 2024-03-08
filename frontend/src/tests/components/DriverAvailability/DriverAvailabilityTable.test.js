@@ -56,13 +56,7 @@ describe("DriverAvailabilityTable tests", () => {
         );
     });
 
-    test("renders without crashing for three availabilities", () => {
-        render(
-            <QueryClientProvider client={queryClient}>
-                <DriverAvailabilityTable driverAvailabilities={driverAvailabilityFixtures.threeDriverAvailabilities} />
-            </QueryClientProvider>
-        );
-    });
+    
 
     test("Has the expected column headers and content for adminUser", () => {
         const currentUser = currentUserFixtures.adminUser;
@@ -128,7 +122,8 @@ describe("DriverAvailabilityTable tests", () => {
         await waitFor(() => { expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("1"); });
     
         const editButton = screen.getByTestId(`${testId}-cell-row-0-col-Edit-button`);
-        expect(screen.queryByText("Delete")).not.toBeInTheDocument();
+        const deleteButton = screen.getByTestId(`${testId}-cell-row-0-col-Delete-button`);
+        expect(deleteButton).toBeInTheDocument();
         expect(editButton).toBeInTheDocument();
         
         

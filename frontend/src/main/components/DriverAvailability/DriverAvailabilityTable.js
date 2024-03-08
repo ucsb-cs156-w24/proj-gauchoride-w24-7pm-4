@@ -49,10 +49,8 @@ export default function DriverAvailabilityTable ({ driverAvailabilities, current
             accessor: 'notes',
         }
     ];
-    if (hasRole(currentUser, "ROLE_ADMIN")) {
-        columns.push(ButtonColumn("Delete", "danger", deleteCallback, "DriverAvailabilityTable"));
-    } 
     if (hasRole(currentUser, "ROLE_ADMIN") || hasRole(currentUser, "ROLE_DRIVER") ){
+        columns.push(ButtonColumn("Delete", "danger", deleteCallback, "DriverAvailabilityTable"));
         columns.push(ButtonColumn("Edit", "primary", editCallback, "DriverAvailabilityTable"));
     } 
     return <OurTable
