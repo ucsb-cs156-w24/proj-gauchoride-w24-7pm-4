@@ -140,7 +140,7 @@ describe("DriverAvailabilityIndexPage tests", () => {
     test("renders three rides without crashing for admin user", async () => {
         setupAdminUser();
         const queryClient = new QueryClient();
-        axiosMock.onGet("/api/driverAvailability/all").reply(200, driverAvailabilityFixtures.threeDriverAvailabilities);
+        axiosMock.onGet("/api/driverAvailability/admin/all").reply(200, driverAvailabilityFixtures.threeDriverAvailabilities);
 
         const { getByTestId } = render(
             <QueryClientProvider client={queryClient}>
