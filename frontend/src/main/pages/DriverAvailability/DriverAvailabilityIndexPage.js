@@ -3,19 +3,19 @@ import { useBackend } from 'main/utils/useBackend';
 
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import DriverAvailabilityTable from 'main/components/Driver/DriverAvailabilityTable';
-import { useCurrentUser } from 'main/utils/currentUser';
+import { hasRole, useCurrentUser } from 'main/utils/currentUser';
 import Button from 'react-bootstrap/Button';
 import { Link } from 'react-router-dom';
 export default function DriverAvailabilityIndexPage() {
 
   const currentUser = useCurrentUser();
-
+  const isAdmin = hasRole(currentUser, "ROLE_ADMIN");
 
   const { data: driverAvailabilities, error: _error, status: _status } =
     useBackend(
       // Stryker disable all : hard to test for query caching
-      ["/api/driverAvailability/all"],
-      { method: "GET", url: "/api/driverAvailability/all" },
+      isAdmin ? ["/api/driverAvailability/admin/all"] : ["/api/driverAvailability/all"],
+      { method: "GET", url: isAdmin ? "/api/driverAvailability/admin/all" : "/api/driverAvailability/all" },
       []
     );
 
