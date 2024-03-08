@@ -35,7 +35,6 @@ describe("DriverAvailabilityIndexPage tests", () => {
         axiosMock.resetHistory();
         axiosMock.onGet("/api/currentUser").reply(200, apiCurrentUserFixtures.adminUser);
         axiosMock.onGet("/api/systemInfo").reply(200, systemInfoFixtures.showingNeither);
-        axiosMock.onGet("/api/driverAvailability/admin/all").reply(200, driverAvailabilityFixtures.threeDriverAvailabilities);
     };
     const setupDriverOnly = () => {
         axiosMock.reset();
@@ -84,7 +83,7 @@ describe("DriverAvailabilityIndexPage tests", () => {
     test("renders without crashing for admin user", () => {
         setupAdminUser();
         const queryClient = new QueryClient();
-        axiosMock.onGet("/api/driverAvailability/admin/all").reply(200, []);
+        axiosMock.onGet("/api/driverAvailability/all").reply(200, []);
 
         render(
             <QueryClientProvider client={queryClient}>
@@ -141,7 +140,7 @@ describe("DriverAvailabilityIndexPage tests", () => {
     test("renders three rides without crashing for admin user", async () => {
         setupAdminUser();
         const queryClient = new QueryClient();
-        axiosMock.onGet("/api/driverAvailability/admin/all").reply(200, driverAvailabilityFixtures.threeDriverAvailabilities);
+        axiosMock.onGet("/api/driverAvailability/all").reply(200, driverAvailabilityFixtures.threeDriverAvailabilities);
 
         const { getByTestId } = render(
             <QueryClientProvider client={queryClient}>
