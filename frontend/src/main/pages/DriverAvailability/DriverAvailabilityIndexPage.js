@@ -2,16 +2,15 @@ import React from 'react';
 import { useBackend } from 'main/utils/useBackend';
 
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
-import DriverAvailabilityTable from 'main/components/DriverAvailability/DriverAvailabilityTable';
-import { useCurrentUser } from 'main/utils/currentUser';
+import DriverAvailabilityTable from 'main/components/Driver/DriverAvailabilityTable';
+import { hasRole, useCurrentUser } from 'main/utils/currentUser';
 import Button from 'react-bootstrap/Button';
 import { Link } from 'react-router-dom';
-
 export default function DriverAvailabilityIndexPage() {
 
   const currentUser = useCurrentUser();
 
-  const isAdmin = currentUser && currentUser.roles.includes("ROLE_ADMIN");
+  const isAdmin = hasRole(currentUser, "ROLE_DRIVER");
 
   const { data: driverAvailabilities, error: _error, status: _status } =
     useBackend(
