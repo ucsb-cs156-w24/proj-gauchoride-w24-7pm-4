@@ -20,7 +20,7 @@ export const Empty = Template.bind({});
 Empty.args = {
     driverAvailabilities: []
 };
-2
+
 export const ThreeDriverAvailabilitiesDriver = Template.bind({});
 
 ThreeDriverAvailabilitiesDriver.args = {
