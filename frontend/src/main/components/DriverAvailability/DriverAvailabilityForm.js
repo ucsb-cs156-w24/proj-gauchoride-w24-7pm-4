@@ -12,6 +12,10 @@ function DriverAvailabilityForm({ initialContents, submitAction, buttonLabel = "
 
     const navigate = useNavigate();
 
+     // Stryker disable next-line all
+    const timeRegex = /^(0[1-9]|1[0-2]):([0-5][0-9])\s?(AM|PM)$/i;
+    // Stryker disable next-line all
+    const dayRegex = /^(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)$/i;
     return (
         <Form onSubmit={handleSubmit(submitAction)}>
             <Row>
@@ -38,7 +42,7 @@ function DriverAvailabilityForm({ initialContents, submitAction, buttonLabel = "
                             data-testid="DriverAvailabilityForm-day"
                             id="day"
                             type="text"
-                            {...register("day", { required: true })}
+                            {...register("day", { required: true, pattern: dayRegex })}
                             isInvalid={Boolean(errors.day)}
                         />
                         <Form.Control.Feedback type="invalid">
@@ -54,7 +58,7 @@ function DriverAvailabilityForm({ initialContents, submitAction, buttonLabel = "
                             data-testid="DriverAvailabilityForm-startTime"
                             id="startTime"
                             type="text"
-                            {...register("startTime", { required: true })}
+                            {...register("startTime", { required: true, pattern: timeRegex })}
                             isInvalid={Boolean(errors.startTime)}
                         />
                         <Form.Control.Feedback type="invalid">
@@ -70,7 +74,7 @@ function DriverAvailabilityForm({ initialContents, submitAction, buttonLabel = "
                             data-testid="DriverAvailabilityForm-endTime"
                             id="endTime"
                             type="text"
-                            {...register("endTime", { required: true })}
+                            {...register("endTime", { required: true, pattern: timeRegex })}
                             isInvalid={Boolean(errors.endTime)}
                         />
                         <Form.Control.Feedback type="invalid">

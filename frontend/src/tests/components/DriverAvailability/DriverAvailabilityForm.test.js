@@ -59,8 +59,8 @@ describe("DriverAvailabilityForm tests", () => {
 
         fireEvent.change(screen.getByTestId("DriverAvailabilityForm-driverId"), { target: { value: '1' } });
         fireEvent.change(screen.getByTestId("DriverAvailabilityForm-day"), { target: { value: 'Monday' } });
-        fireEvent.change(screen.getByTestId("DriverAvailabilityForm-startTime"), { target: { value: '09:00' } });
-        fireEvent.change(screen.getByTestId("DriverAvailabilityForm-endTime"), { target: { value: '17:00' } });
+        fireEvent.change(screen.getByTestId("DriverAvailabilityForm-startTime"), { target: { value: '09:00AM' } });
+        fireEvent.change(screen.getByTestId("DriverAvailabilityForm-endTime"), { target: { value: '05:00PM' } });
         fireEvent.change(screen.getByTestId("DriverAvailabilityForm-notes"), { target: { value: 'free' } });
 
         fireEvent.click(screen.getByTestId("DriverAvailabilityForm-submit"));
@@ -96,9 +96,9 @@ describe("DriverAvailabilityForm tests", () => {
         const initialContents = {
             driverId: '1',
             day: 'Monday',
-            startTime: '09:00',
-            endTime: '17:00',
-            notes: 'Available all day',
+            startTime: '09:00AM',
+            endTime: '05:00PM',
+            notes: 'free',
         };
         render(
             <Router>
@@ -107,7 +107,6 @@ describe("DriverAvailabilityForm tests", () => {
         );
         expect(screen.getByTestId("DriverAvailabilityForm-driverId")).toHaveValue(Number(initialContents.driverId));
         expect(screen.getByTestId("DriverAvailabilityForm-day")).toHaveValue(initialContents.day);
-        // Add checks for other fields as well
     });
 
     test("initializes form without initialContents correctly", async () => {
@@ -117,6 +116,5 @@ describe("DriverAvailabilityForm tests", () => {
             </Router>
         );
         expect(screen.getByTestId("DriverAvailabilityForm-driverId")).toHaveValue(null);
-        // Add checks for other fields to be empty or have default values as appropriate
     });
 });
