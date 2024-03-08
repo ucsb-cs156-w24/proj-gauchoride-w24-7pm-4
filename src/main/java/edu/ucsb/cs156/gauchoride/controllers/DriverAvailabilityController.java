@@ -43,7 +43,7 @@ public class DriverAvailabilityController extends ApiController {
     ObjectMapper mapper;
 
     @Operation(summary = "Create a new driver availability for the table")
-    @PreAuthorize("hasRole('ROLE_DRIVER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
     @PostMapping("/new")
     public DriverAvailability postDriverAvailability(
         @Parameter(name="day") @RequestParam String day,
@@ -67,7 +67,7 @@ public class DriverAvailabilityController extends ApiController {
         }
 
     @Operation(summary= "Delete Driver Availability")
-    @PreAuthorize("hasRole('ROLE_DRIVER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
     @DeleteMapping("")
     public Object deletemenuitem(
         @Parameter(name="id") @RequestParam Long id) 
@@ -81,7 +81,7 @@ public class DriverAvailabilityController extends ApiController {
     
 
     @Operation(summary= "Update Driver Availability")
-    @PreAuthorize("hasRole('ROLE_DRIVER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
     @PutMapping("")
     public DriverAvailability updatemenuitem(
             @Parameter(name="id") @RequestParam Long id,
@@ -103,7 +103,7 @@ public class DriverAvailabilityController extends ApiController {
 
 
     @Operation(summary= "List all Driver Availability")
-    @PreAuthorize("hasRole('ROLE_DRIVER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER','USER')")
     @GetMapping("/all")
     public Iterable<DriverAvailability> allmenuitems() {
         Iterable<DriverAvailability> drivall = driverAvailabilityRepository.findAll();
@@ -112,7 +112,7 @@ public class DriverAvailabilityController extends ApiController {
 
 
     @Operation(summary= "Get Driver Availability")
-    @PreAuthorize("hasRole('ROLE_DRIVER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER','USER')")
     @GetMapping("")
     public DriverAvailability getById(
             @Parameter(name="id") @RequestParam Long id) {

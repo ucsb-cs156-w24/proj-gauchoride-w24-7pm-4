@@ -98,7 +98,7 @@ public class DriverAvailabilityControllerTests extends ControllerTestCase {
             String responseString = response.getResponse().getContentAsString();
             assertEquals(expectedJson, responseString);
         }
-        @WithMockUser(roles = { "DRIVER" })
+        @WithMockUser(roles = { "ADMIN" })
         @Test
         public void admin_can_delete_a_driveravailibilty() throws Exception {
             // arrange
@@ -127,7 +127,7 @@ public class DriverAvailabilityControllerTests extends ControllerTestCase {
             assertEquals("Driver Availability with id 1 deleted", json.get("message"));
         }
 
-    @WithMockUser(roles = { "DRIVER" })
+    @WithMockUser(roles = { "ADMIN" })
     @Test
     public void admin_tries_to_delete_non_existant_driveravailibilty_and_gets_right_error_message()
             throws Exception {
@@ -147,7 +147,7 @@ public class DriverAvailabilityControllerTests extends ControllerTestCase {
         assertEquals("DriverAvailability with id 1 not found", json.get("message"));
     }
 
-    @WithMockUser(roles = { "DRIVER" })
+    @WithMockUser(roles = { "ADMIN"})
     @Test
 public void admin_can_edit_an_existing_driveravailibility() throws Exception {
     // Arrange
@@ -199,7 +199,7 @@ public void admin_can_edit_an_existing_driveravailibility() throws Exception {
 
 
 
-    @WithMockUser(roles = { "DRIVER" })
+    @WithMockUser(roles = { "ADMIN" })
     @Test
     public void admin_cannot_edit_ucsbdiningcommonsmenuitem_that_does_not_exist() throws Exception {
         // arrange
@@ -237,14 +237,14 @@ public void admin_can_edit_an_existing_driveravailibility() throws Exception {
                 .andExpect(status().is(403)); // logged out users can't get all
     }
 
-    @WithMockUser(roles = { "USER","DRIVER" })
+    @WithMockUser(roles = { "USER"})
     @Test
     public void logged_in_users_can_get_all() throws Exception {
         mockMvc.perform(get("/api/driverAvailability/all"))
                 .andExpect(status().is(200)); // logged
     }
 
-    @WithMockUser(roles = { "USER","DRIVER" })
+    @WithMockUser(roles = { "USER"})
     @Test
     public void logged_in_user_can_get_all_driveravailibilty() throws Exception {
         DriverAvailability item1 = DriverAvailability.builder()
@@ -284,7 +284,7 @@ public void admin_can_edit_an_existing_driveravailibility() throws Exception {
                 .andExpect(status().is(403)); // logged out users can't get by id
     }
 
-    @WithMockUser(roles = { "DRIVER" })
+    @WithMockUser(roles = { "USER" })
     @Test
     public void test_that_logged_in_user_can_get_by_id_when_the_id_exists() throws Exception {
 
@@ -311,7 +311,7 @@ public void admin_can_edit_an_existing_driveravailibility() throws Exception {
         assertEquals(expectedJson, responseString);
     }
 
-    @WithMockUser(roles = { "DRIVER" })
+    @WithMockUser(roles = { "USER" })
     @Test
     public void test_that_logged_in_user_can_get_by_id_when_the_id_does_not_exist() throws Exception {
 
