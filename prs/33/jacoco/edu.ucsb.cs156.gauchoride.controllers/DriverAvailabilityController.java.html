@@ -43,7 +43,7 @@ import io.swagger.v3.oas.annotations.Parameter;
     ObjectMapper mapper;
 
     @Operation(summary = &quot;Create a new driver availability for the table&quot;)
-    @PreAuthorize(&quot;hasRole('ROLE_DRIVER')&quot;)
+    @PreAuthorize(&quot;hasAnyRole('ADMIN', 'DRIVER')&quot;)
     @PostMapping(&quot;/new&quot;)
     public DriverAvailability postDriverAvailability(
         @Parameter(name=&quot;day&quot;) @RequestParam String day,
@@ -67,7 +67,7 @@ import io.swagger.v3.oas.annotations.Parameter;
         }
 
     @Operation(summary= &quot;Delete Driver Availability&quot;)
-    @PreAuthorize(&quot;hasRole('ROLE_DRIVER')&quot;)
+    @PreAuthorize(&quot;hasAnyRole('ADMIN', 'DRIVER')&quot;)
     @DeleteMapping(&quot;&quot;)
     public Object deletemenuitem(
         @Parameter(name=&quot;id&quot;) @RequestParam Long id) 
@@ -77,49 +77,69 @@ import io.swagger.v3.oas.annotations.Parameter;
         
 <span class="fc" id="L78">         driverAvailabilityRepository.delete(drivav);</span>
 <span class="fc" id="L79">        return genericMessage(&quot;Driver Availability with id %s deleted&quot;.formatted(id));</span>
-        }
-    
+        }    
 
     @Operation(summary= &quot;Update Driver Availability&quot;)
-    @PreAuthorize(&quot;hasRole('ROLE_DRIVER')&quot;)
+    @PreAuthorize(&quot;hasAnyRole('ADMIN', 'DRIVER')&quot;)
     @PutMapping(&quot;&quot;)
     public DriverAvailability updatemenuitem(
             @Parameter(name=&quot;id&quot;) @RequestParam Long id,
             @RequestBody @Valid DriverAvailability incoming) {
 
-<span class="fc" id="L90">        DriverAvailability drivav = driverAvailabilityRepository.findById(id)</span>
-<span class="fc" id="L91">        .orElseThrow(() -&gt; new EntityNotFoundException(DriverAvailability.class, id));</span>
+<span class="fc" id="L89">        DriverAvailability drivav = driverAvailabilityRepository.findById(id)</span>
+<span class="fc" id="L90">        .orElseThrow(() -&gt; new EntityNotFoundException(DriverAvailability.class, id));</span>
 
-<span class="fc" id="L93">        drivav.setDriverId(incoming.getDriverId());</span>
-<span class="fc" id="L94">        drivav.setDay(incoming.getDay());</span>
-<span class="fc" id="L95">        drivav.setStartTime(incoming.getStartTime());</span>
-<span class="fc" id="L96">        drivav.setEndTime(incoming.getEndTime());</span>
-<span class="fc" id="L97">        drivav.setNotes(incoming.getNotes());</span>
+<span class="fc" id="L92">        drivav.setDriverId(incoming.getDriverId());</span>
+<span class="fc" id="L93">        drivav.setDay(incoming.getDay());</span>
+<span class="fc" id="L94">        drivav.setStartTime(incoming.getStartTime());</span>
+<span class="fc" id="L95">        drivav.setEndTime(incoming.getEndTime());</span>
+<span class="fc" id="L96">        drivav.setNotes(incoming.getNotes());</span>
 
-<span class="fc" id="L99">        driverAvailabilityRepository.save(drivav);</span>
+<span class="fc" id="L98">        driverAvailabilityRepository.save(drivav);</span>
 
-<span class="fc" id="L101">        return drivav;</span>
+<span class="fc" id="L100">        return drivav;</span>
     }
 
 
     @Operation(summary= &quot;List all Driver Availability&quot;)
-    @PreAuthorize(&quot;hasRole('ROLE_DRIVER')&quot;)
+    @PreAuthorize(&quot;hasAnyRole('ADMIN', 'DRIVER','USER')&quot;)
     @GetMapping(&quot;/all&quot;)
     public Iterable&lt;DriverAvailability&gt; allmenuitems() {
-<span class="fc" id="L109">        Iterable&lt;DriverAvailability&gt; drivall = driverAvailabilityRepository.findAll();</span>
-<span class="fc" id="L110">        return drivall;</span>
+<span class="fc" id="L108">        Iterable&lt;DriverAvailability&gt; drivall = driverAvailabilityRepository.findAll();</span>
+<span class="fc" id="L109">        return drivall;</span>
     }
 
 
     @Operation(summary= &quot;Get Driver Availability&quot;)
-    @PreAuthorize(&quot;hasRole('ROLE_DRIVER')&quot;)
+    @PreAuthorize(&quot;hasAnyRole('ADMIN', 'DRIVER','USER')&quot;)
     @GetMapping(&quot;&quot;)
     public DriverAvailability getById(
             @Parameter(name=&quot;id&quot;) @RequestParam Long id) {
-<span class="fc" id="L119">        DriverAvailability drivav = driverAvailabilityRepository.findById(id)</span>
-<span class="fc" id="L120">                .orElseThrow(() -&gt; new EntityNotFoundException( DriverAvailability.class, id));</span>
+<span class="fc" id="L118">        DriverAvailability drivav = driverAvailabilityRepository.findById(id)</span>
+<span class="fc" id="L119">                .orElseThrow(() -&gt; new EntityNotFoundException( DriverAvailability.class, id));</span>
 
-<span class="fc" id="L122">        return drivav;</span>
+<span class="fc" id="L121">        return drivav;</span>
+    }
+
+    @Operation(summary = &quot;Get a list of all driver availabilities&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+    @GetMapping(&quot;/admin/all&quot;)
+    public ResponseEntity&lt;String&gt; allDriverAvailabilities()
+            throws JsonProcessingException {
+<span class="fc" id="L129">        Iterable&lt;DriverAvailability&gt; driverAvailabilities = driverAvailabilityRepository.findAll();</span>
+<span class="fc" id="L130">        String body = mapper.writeValueAsString(driverAvailabilities);</span>
+<span class="fc" id="L131">        return ResponseEntity.ok().body(body);</span>
+    }
+
+    @Operation(summary = &quot;Get driver availability by id&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+    @GetMapping(&quot;/admin&quot;)
+    public DriverAvailability driverAvailabilityByID(
+            @Parameter(name = &quot;id&quot;, description = &quot;Long, id number of driver availability to get&quot;, example = &quot;1&quot;, required = true) @RequestParam Long id)
+            throws JsonProcessingException {
+<span class="fc" id="L140">        DriverAvailability driverAvailability = driverAvailabilityRepository.findById(id)</span>
+<span class="fc" id="L141">                .orElseThrow(() -&gt; new EntityNotFoundException(DriverAvailability.class, id));</span>
+<span class="fc" id="L142">        return driverAvailability;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
