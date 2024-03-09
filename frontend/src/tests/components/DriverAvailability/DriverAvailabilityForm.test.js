@@ -32,21 +32,32 @@ describe("DriverAvailabilityForm tests", () => {
         await screen.findByTestId("DriverAvailabilityForm-cancel");
     });
 
-    test("Correct Error messages on missing input", async () => {
+    test("Correct Error messages for both missing and incorrect inputs", async () => {
         render(
             <Router>
                 <DriverAvailabilityForm submitAction={mockSubmitAction} />
             </Router>
         );
 
-        const submitButton = screen.getByTestId("DriverAvailabilityForm-submit");
-        fireEvent.click(submitButton);
+        fireEvent.click(screen.getByTestId("DriverAvailabilityForm-submit"));
 
         await waitFor(() => {
             expect(screen.getByText("Driver ID is required.")).toBeInTheDocument();
             expect(screen.getByText("Day is required.")).toBeInTheDocument();
             expect(screen.getByText("Start Time is required.")).toBeInTheDocument();
             expect(screen.getByText("End Time is required.")).toBeInTheDocument();
+        });
+
+
+        fireEvent.change(screen.getByTestId("DriverAvailabilityForm-day"), { target: { value: 'jesday' } });
+        fireEvent.change(screen.getByTestId("DriverAvailabilityForm-startTime"), { target: { value: '25:00AM' } });
+        fireEvent.change(screen.getByTestId("DriverAvailabilityForm-endTime"), { target: { value: '13:60PM' } });
+
+        fireEvent.click(screen.getByTestId("DriverAvailabilityForm-submit"));
+
+        await waitFor(() => {
+            expect(screen.getByText("Invalid day format. Please enter a valid day of the week.")).toBeInTheDocument();
+            expect(screen.getAllByText("Invalid time format. Please enter a valid time (HH:MM AM/PM).").length).toBe(2); 
         });
     });
 
@@ -83,7 +94,7 @@ describe("DriverAvailabilityForm tests", () => {
         await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith(-1));
     });
 
-    test("button label goes automaticallyto 'Create' when not specified ", async () => {
+    test("button label defaults to 'Create' when not specified", async () => {
         render(
             <Router>
                 <DriverAvailabilityForm submitAction={mockSubmitAction} />
@@ -107,6 +118,9 @@ describe("DriverAvailabilityForm tests", () => {
         );
         expect(screen.getByTestId("DriverAvailabilityForm-driverId")).toHaveValue(Number(initialContents.driverId));
         expect(screen.getByTestId("DriverAvailabilityForm-day")).toHaveValue(initialContents.day);
+        expect(screen.getByTestId("DriverAvailabilityForm-startTime")).toHaveValue(initialContents.startTime);
+        expect(screen.getByTestId("DriverAvailabilityForm-endTime")).toHaveValue(initialContents.endTime);
+        expect(screen.getByTestId("DriverAvailabilityForm-notes")).toHaveValue(initialContents.notes);
     });
 
     test("initializes form without initialContents correctly", async () => {
@@ -115,6 +129,6 @@ describe("DriverAvailabilityForm tests", () => {
                 <DriverAvailabilityForm submitAction={mockSubmitAction} />
             </Router>
         );
-        expect(screen.getByTestId("DriverAvailabilityForm-driverId")).toHaveValue(null);
+        expect(screen.getByTestId("DriverAvailabilityForm-driverId").value).toBe("");
     });
 });
