@@ -43,7 +43,7 @@ public class DriverAvailabilityControllerTests extends ControllerTestCase {
 
         @MockBean
         UserRepository userRepository;
-        
+
         // Authorization tests for /api/driverAvailability/post
 
         @Test
@@ -146,7 +146,7 @@ public class DriverAvailabilityControllerTests extends ControllerTestCase {
         Map<String, Object> json = responseToJson(response);
         assertEquals("DriverAvailability with id 1 not found", json.get("message"));
     }
-
+    
     @WithMockUser(roles = { "ADMIN"})
     @Test
 public void admin_can_edit_an_existing_driveravailibility() throws Exception {
@@ -330,5 +330,147 @@ public void admin_can_edit_an_existing_driveravailibility() throws Exception {
         assertEquals("EntityNotFoundException", json.get("type"));
         assertEquals("DriverAvailability with id 7 not found", json.get("message"));
     }
+
+
+        // Authorization tests for /api/driverAvailability/admin/all
+
+        @WithMockUser(roles = { "USER" })
+        @Test
+        public void logged_in_users_cannot_get_all_of_theirs() throws Exception {
+                mockMvc.perform(get("/api/driverAvailability/admin/all"))
+                                .andExpect(status().is(403)); // logged
+        }
+
+        @WithMockUser(roles = { "DRIVER" })
+        @Test
+        public void logged_in_driver_cannot_get_all() throws Exception {
+                mockMvc.perform(get("/api/driverAvailability/admin/all"))
+                                .andExpect(status().is(403)); // logged
+        }
+
+        @WithMockUser(roles = { "ADMIN" })
+        @Test
+        public void logged_in_admin_can_get_all() throws Exception {
+                mockMvc.perform(get("/api/driverAvailability/admin/all"))
+                                .andExpect(status().is(200)); // logged
+        }
+
+
+
+        @WithMockUser(roles = { "USER" })
+        @Test
+        public void logged_in_users_cannot_get_by_id() throws Exception {
+                mockMvc.perform(get("/api/driverAvailability/admin?id=7"))
+                                .andExpect(status().is(403));
+        }
+
+        @WithMockUser(roles = { "DRIVER" })
+        @Test
+        public void logged_in_driver_cannot_get_by_id() throws Exception {
+                mockMvc.perform(get("/api/driverAvailability/admin?id=7"))
+                                .andExpect(status().is(403));
+        }
+
+        @WithMockUser(roles = { "ADMIN" })
+        @Test
+        public void logged_in_admin_can_get_by_id() throws Exception {
+                mockMvc.perform(get("/api/driverAvailability/admin?id=7"))
+                                .andExpect(status().is(404)); // logged, but no id exists
+        }
+        
+        // ADMIN GET BY ID
+
+        @WithMockUser(roles = { "ADMIN" , "USER" })
+        @Test
+        public void test_that_logged_in_admin_can_get_by_id_when_the_id_exists() throws Exception {
+
+                // arrange
+
+                long userId = currentUserService.getCurrentUser().getUser().getId();
+
+                DriverAvailability driverAvailability = DriverAvailability.builder()
+                                .driverId(userId)
+                                .day("Monday")
+                                .startTime("10:00AM")
+                                .endTime("12:30PM")
+                                .notes("")
+                                .build();
+
+                when(driverAvailabilityRepository.findById(eq(7L))).thenReturn(Optional.of(driverAvailability));
+
+                // act
+                MvcResult response = mockMvc.perform(get("/api/driverAvailability/admin?id=7"))
+                                .andExpect(status().isOk()).andReturn();
+
+                // assert
+
+                verify(driverAvailabilityRepository, times(1)).findById(eq(7L));
+                String expectedJson = mapper.writeValueAsString(driverAvailability);
+                String responseString = response.getResponse().getContentAsString();
+                assertEquals(expectedJson, responseString);
+        }
+
+        @WithMockUser(roles = { "ADMIN" , "USER" })
+        @Test
+        public void test_that_logged_in_admin_can_get_by_id_when_the_id_does_not_exist() throws Exception {
+
+                // arrange
+
+                when(driverAvailabilityRepository.findById(eq(7L))).thenReturn(Optional.empty());
+
+                // act
+                MvcResult response = mockMvc.perform(get("/api/driverAvailability/admin?id=7"))
+                                .andExpect(status().isNotFound()).andReturn();
+
+                // assert
+
+                verify(driverAvailabilityRepository, times(1)).findById(eq(7L));
+                Map<String, Object> json = responseToJson(response);
+                assertEquals("EntityNotFoundException", json.get("type"));
+                assertEquals("DriverAvailability with id 7 not found", json.get("message"));
+        }     
+
+
+        // GET ALL
+
+        @WithMockUser(roles = { "ADMIN" , "USER" })
+        @Test
+        public void logged_in_admin_can_get_all_driver_availabilities() throws Exception {
+
+                long userId = currentUserService.getCurrentUser().getUser().getId();
+
+                DriverAvailability availability1 = DriverAvailability.builder()
+                                .driverId(userId)
+                                .day("Monday")
+                                .startTime("10:30AM")
+                                .endTime("12:30PM")
+                                .notes("")
+                                .build();
+
+                DriverAvailability availability2 = DriverAvailability.builder()
+                                .driverId(userId)
+                                .day("Tuesday")
+                                .startTime("10:30AM")
+                                .endTime("12:30PM")
+                                .notes("")
+                                .build();
+
+
+                ArrayList<DriverAvailability> expectedDriverAvailabilities = new ArrayList<>();
+                expectedDriverAvailabilities.addAll(Arrays.asList(availability1, availability2));
+
+                when(driverAvailabilityRepository.findAll()).thenReturn(expectedDriverAvailabilities);
+
+                // act
+                MvcResult response = mockMvc.perform(get("/api/driverAvailability/admin/all"))
+                                .andExpect(status().isOk()).andReturn();
+
+                // assert
+
+                verify(driverAvailabilityRepository, times(1)).findAll();
+                String expectedJson = mapper.writeValueAsString(expectedDriverAvailabilities);
+                String responseString = response.getResponse().getContentAsString();
+                assertEquals(expectedJson, responseString);
+        }
 
 }
