@@ -121,7 +121,6 @@ public class DriverAvailabilityController extends ApiController {
         return drivav;
     }
 
-
     @Operation(summary = "Get a list of all driver availabilities")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/admin/all")
@@ -141,6 +140,5 @@ public class DriverAvailabilityController extends ApiController {
         DriverAvailability driverAvailability = driverAvailabilityRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(DriverAvailability.class, id));
         return driverAvailability;
-
     }
 }
