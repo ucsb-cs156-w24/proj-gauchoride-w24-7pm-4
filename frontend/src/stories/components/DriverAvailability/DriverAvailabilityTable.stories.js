@@ -21,19 +21,20 @@ Empty.args = {
     driverAvailabilities: []
 };
 
-export const ThreeDriverAvailabilitiesOrdinaryUser = Template.bind({});
-
-ThreeDriverAvailabilitiesOrdinaryUser.args = {
-    driverAvailabilities: driverAvailabilityFixtures.threeDriverAvailabilities,
-    currentUser: currentUserFixtures.userOnly,
-};
 export const ThreeDriverAvailabilitiesDriver = Template.bind({});
 
 ThreeDriverAvailabilitiesDriver.args = {
     driverAvailabilities: driverAvailabilityFixtures.threeDriverAvailabilities,
     currentUser: currentUserFixtures.driverOnly,
+}
+ThreeDriverAvailabilitiesDriver.parameters = {
+    msw: [
+        rest.delete('/api/driverAvailability', (req, res, ctx) => {
+            window.alert("DELETE: " + JSON.stringify(req.url));
+            return res(ctx.status(200),ctx.json({}));
+        }),
+    ]
 };
-
 export const ThreeDriverAvailabilityAdminUser = Template.bind({});
 
 ThreeDriverAvailabilityAdminUser.args = {
