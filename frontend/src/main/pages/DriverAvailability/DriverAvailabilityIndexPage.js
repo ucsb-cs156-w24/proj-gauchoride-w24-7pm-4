@@ -2,7 +2,7 @@ import React from 'react';
 import { useBackend } from 'main/utils/useBackend';
 
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
-import DriverAvailabilityTable from 'main/components/Driver/DriverAvailabilityTable';
+import DriverAvailabilityTable from 'main/components/DriverAvailability/DriverAvailabilityTable';
 import { hasRole, useCurrentUser } from 'main/utils/currentUser';
 import Button from 'react-bootstrap/Button';
 import { Link } from 'react-router-dom';
