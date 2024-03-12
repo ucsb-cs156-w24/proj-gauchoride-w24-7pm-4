@@ -12,6 +12,10 @@ function DriverAvailabilityForm({ initialContents, submitAction, buttonLabel = "
 
     const navigate = useNavigate();
 
+    // Stryker disable next-line all
+    const timeRegex = /^(0[1-9]|1[0-2]):([0-5][0-9])\s?(AM|PM)$/i;
+    // Stryker disable next-line all
+    const dayRegex = /^(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)$/i;
     return (
         <Form onSubmit={handleSubmit(submitAction)}>
             <Row>
@@ -22,11 +26,11 @@ function DriverAvailabilityForm({ initialContents, submitAction, buttonLabel = "
                             data-testid="DriverAvailabilityForm-driverId"
                             id="driverId"
                             type="number"
-                            {...register("driverId", { required: true })}
+                            {...register("driverId", { required: "Driver ID is required." })}
                             isInvalid={Boolean(errors.driverId)}
                         />
                         <Form.Control.Feedback type="invalid">
-                            {errors.driverId && 'Driver ID is required.'}
+                            {errors.driverId && errors.driverId.message}
                         </Form.Control.Feedback>
                     </Form.Group>
                 </Col>
@@ -38,11 +42,17 @@ function DriverAvailabilityForm({ initialContents, submitAction, buttonLabel = "
                             data-testid="DriverAvailabilityForm-day"
                             id="day"
                             type="text"
-                            {...register("day", { required: true })}
+                            {...register("day", {
+                                required: "Day is required.",
+                                pattern: {
+                                    value: dayRegex,
+                                    message: "Invalid day format. Please enter a valid day of the week."
+                                }
+                            })}
                             isInvalid={Boolean(errors.day)}
                         />
                         <Form.Control.Feedback type="invalid">
-                            {errors.day && 'Day is required.'}
+                            {errors.day && errors.day.message}
                         </Form.Control.Feedback>
                     </Form.Group>
                 </Col>
@@ -54,11 +64,17 @@ function DriverAvailabilityForm({ initialContents, submitAction, buttonLabel = "
                             data-testid="DriverAvailabilityForm-startTime"
                             id="startTime"
                             type="text"
-                            {...register("startTime", { required: true })}
+                            {...register("startTime", {
+                                required: "Start Time is required.",
+                                pattern: {
+                                    value: timeRegex,
+                                    message: "Invalid time format. Please enter a valid time (HH:MM AM/PM)."
+                                }
+                            })}
                             isInvalid={Boolean(errors.startTime)}
                         />
                         <Form.Control.Feedback type="invalid">
-                            {errors.startTime && 'Start Time is required.'}
+                            {errors.startTime && errors.startTime.message}
                         </Form.Control.Feedback>
                     </Form.Group>
                 </Col>
@@ -70,11 +86,17 @@ function DriverAvailabilityForm({ initialContents, submitAction, buttonLabel = "
                             data-testid="DriverAvailabilityForm-endTime"
                             id="endTime"
                             type="text"
-                            {...register("endTime", { required: true })}
+                            {...register("endTime", {
+                                required: "End Time is required.",
+                                pattern: {
+                                    value: timeRegex,
+                                    message: "Invalid time format. Please enter a valid time (HH:MM AM/PM)."
+                                }
+                            })}
                             isInvalid={Boolean(errors.endTime)}
                         />
                         <Form.Control.Feedback type="invalid">
-                            {errors.endTime && 'End Time is required.'}
+                            {errors.endTime && errors.endTime.message}
                         </Form.Control.Feedback>
                     </Form.Group>
                 </Col>
@@ -98,7 +120,7 @@ function DriverAvailabilityForm({ initialContents, submitAction, buttonLabel = "
                     <Button type="submit" data-testid="DriverAvailabilityForm-submit">
                         {buttonLabel}
                     </Button>
-                    <Button variant="Secondary" onClick={() => navigate(-1)} data-testid="DriverAvailabilityForm-cancel">
+                    <Button variant="secondary" onClick={() => navigate(-1)} data-testid="DriverAvailabilityForm-cancel">
                         Cancel
                     </Button>
                 </Col>
