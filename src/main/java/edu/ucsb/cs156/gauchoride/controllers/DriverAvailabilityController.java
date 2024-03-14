@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import edu.ucsb.cs156.gauchoride.entities.DriverAvailability;
+import edu.ucsb.cs156.gauchoride.entities.Ride;
 import edu.ucsb.cs156.gauchoride.repositories.DriverAvailabilityRepository;
 import edu.ucsb.cs156.gauchoride.repositories.UserRepository;
 import edu.ucsb.cs156.gauchoride.errors.EntityNotFoundException;
@@ -15,6 +16,7 @@ import java.time.LocalTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -43,7 +45,7 @@ public class DriverAvailabilityController extends ApiController {
     ObjectMapper mapper;
 
     @Operation(summary = "Create a new driver availability for the table")
-    @PreAuthorize("hasRole('ROLE_DRIVER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
     @PostMapping("/new")
     public DriverAvailability postDriverAvailability(
         @Parameter(name="day") @RequestParam String day,
@@ -67,17 +69,80 @@ public class DriverAvailabilityController extends ApiController {
         }
 
     @Operation(summary= "Delete Driver Availability")
-    @PreAuthorize("hasRole('ROLE_DRIVER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
     @DeleteMapping("")
     public Object deletemenuitem(
         @Parameter(name="id") @RequestParam Long id) 
         {
-        DriverAvailability drivav = driverAvailabilityRepository.findById(id)
-            .orElseThrow(() -> new EntityNotFoundException(DriverAvailability.class, id));
         
-         driverAvailabilityRepository.delete(drivav);
-        return genericMessage("Driver Availability with id %s deleted".formatted(id));
+        DriverAvailability drivav;
+        if (getCurrentUser().getRoles().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
+            drivav = driverAvailabilityRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(DriverAvailability.class, id));
+        } else {
+            drivav = driverAvailabilityRepository.findByIdAndDriverId(id, getCurrentUser().getUser().getId())
+                .orElseThrow(() -> new EntityNotFoundException(DriverAvailability.class, id));
         }
+        
+        driverAvailabilityRepository.delete(drivav);
+        return genericMessage("Driver Availability with id %s deleted".formatted(id));
+        }    
+
+
+        @Operation(summary= "Update Driver Availability")
+        @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
+        @PutMapping("")
+        public DriverAvailability updatemenuitem(
+                @Parameter(name="id") @RequestParam Long id,
+                @RequestBody @Valid DriverAvailability incoming) {
+    
+                DriverAvailability drivav;
+                if (getCurrentUser().getRoles().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
+                    drivav = driverAvailabilityRepository.findById(id)
+                            .orElseThrow(() -> new EntityNotFoundException(DriverAvailability.class, id));
+                } else {
+                    drivav = driverAvailabilityRepository.findByIdAndDriverId(id, getCurrentUser().getUser().getId())
+                            .orElseThrow(() -> new EntityNotFoundException(DriverAvailability.class, id));
+                }
+    
+            drivav.setDriverId(incoming.getDriverId());
+            drivav.setDay(incoming.getDay());
+            drivav.setStartTime(incoming.getStartTime());
+            drivav.setEndTime(incoming.getEndTime());
+            drivav.setNotes(incoming.getNotes());
+    
+            driverAvailabilityRepository.save(drivav);
+    
+            return drivav;
+        }
+
+
+    @Operation(summary= "List all Driver Availability")
+    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
+    @GetMapping("/all")
+    public Iterable<DriverAvailability> allmenuitems() {
+        Iterable<DriverAvailability> driveravail;
+
+        if (getCurrentUser().getRoles().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
+            driveravail = driverAvailabilityRepository.findAll();
+        } else {
+            driveravail = driverAvailabilityRepository.findAllByDriverId(getCurrentUser().getUser().getId());
+        }
+
+        return driveravail;
+    }
+
+
+    @Operation(summary= "Get Driver Availability")
+    @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
+    @GetMapping("")
+    public DriverAvailability getById(
+            @Parameter(name="id") @RequestParam Long id) {
+        DriverAvailability drivav = driverAvailabilityRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException( DriverAvailability.class, id));
+
+        return drivav;
+    }
 
     @Operation(summary = "Get a list of all driver availabilities")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -98,48 +163,5 @@ public class DriverAvailabilityController extends ApiController {
         DriverAvailability driverAvailability = driverAvailabilityRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(DriverAvailability.class, id));
         return driverAvailability;
-    }
-    
-
-    @Operation(summary= "Update Driver Availability")
-    @PreAuthorize("hasRole('ROLE_DRIVER')")
-    @PutMapping("")
-    public DriverAvailability updatemenuitem(
-            @Parameter(name="id") @RequestParam Long id,
-            @RequestBody @Valid DriverAvailability incoming) {
-
-        DriverAvailability drivav = driverAvailabilityRepository.findById(id)
-        .orElseThrow(() -> new EntityNotFoundException(DriverAvailability.class, id));
-
-        drivav.setDriverId(incoming.getDriverId());
-        drivav.setDay(incoming.getDay());
-        drivav.setStartTime(incoming.getStartTime());
-        drivav.setEndTime(incoming.getEndTime());
-        drivav.setNotes(incoming.getNotes());
-
-        driverAvailabilityRepository.save(drivav);
-
-        return drivav;
-    }
-
-
-    @Operation(summary= "List all Driver Availability")
-    @PreAuthorize("hasRole('ROLE_DRIVER')")
-    @GetMapping("/all")
-    public Iterable<DriverAvailability> allmenuitems() {
-        Iterable<DriverAvailability> drivall = driverAvailabilityRepository.findAll();
-        return drivall;
-    }
-
-
-    @Operation(summary= "Get Driver Availability")
-    @PreAuthorize("hasRole('ROLE_DRIVER')")
-    @GetMapping("")
-    public DriverAvailability getById(
-            @Parameter(name="id") @RequestParam Long id) {
-        DriverAvailability drivav = driverAvailabilityRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException( DriverAvailability.class, id));
-
-        return drivav;
     }
 }
