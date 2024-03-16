@@ -58,7 +58,7 @@ describe("DriverAvailabilityCreatePage tests", () => {
             notes: 'free all day'
         };
 
-        axiosMock.onPost("/api/DriverAvailability/new").reply(202, driverAvailability);
+        axiosMock.onPost("/api/driverAvailability/new").reply(202, driverAvailability);
 
         render(
             <QueryClientProvider client={queryClient}>
@@ -97,6 +97,6 @@ describe("DriverAvailabilityCreatePage tests", () => {
         });
 
         expect(mockToast).toBeCalledWith("New Driver Availability Created - id: 1 for driverId: 1");
-        expect(mockNavigate).toBeCalledWith({ "to": "/DriverAvailability" });
+        expect(mockNavigate).toBeCalledWith({ "to": "/driveravailability" });
     });
 });
