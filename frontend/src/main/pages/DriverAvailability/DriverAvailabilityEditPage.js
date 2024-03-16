@@ -31,8 +31,8 @@ export default function DriverAvailabilityEditPage() {
         },
         data: {
             day: driverAvailabilities.day,
-            startTime: driverAvailabilities.start,
-            endTime: driverAvailabilities.end, 
+            startTime: driverAvailabilities.startTime,
+            endTime: driverAvailabilities.endTime, 
             driverId: driverAvailabilities.driverId,
             notes: driverAvailabilities.notes
         }
